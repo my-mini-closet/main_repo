@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "86718160418",
+    "project_id": "my-mini-closets",
+    "storage_bucket": "my-mini-closets.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:86718160418:android:32882b01ab1f2aecc0b47b",
+        "android_client_info": {
+          "package_name": "com.example.myminicloset"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnsgX8xAcPMANOu3FXTjSndvgunB4tLg4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
