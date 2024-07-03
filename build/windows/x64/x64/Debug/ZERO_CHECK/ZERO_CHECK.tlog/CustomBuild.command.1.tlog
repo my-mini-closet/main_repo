@@ -1,0 +1,10 @@
+^C:\USERS\JHKIM\ANDROIDSTUDIOPROJECTS\MAIN_REPO\BUILD\WINDOWS\X64\CMAKEFILES\5492C0120F7D0889CB0F45D1679B3FA3\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/jhkim/AndroidStudioProjects/main_repo/windows -BC:/Users/jhkim/AndroidStudioProjects/main_repo/build/windows/x64 --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/jhkim/AndroidStudioProjects/main_repo/build/windows/x64/myminicloset.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
