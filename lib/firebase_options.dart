@@ -85,4 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'my-mini-closets.appspot.com',
     measurementId: 'G-FRT52KKBLD',
   );
+
 }
