@@ -6,6 +6,7 @@ class BottomNavBar extends StatelessWidget {
 
   BottomNavBar({required this.currentIndex, required this.onTap});
 
+
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
