@@ -6,7 +6,6 @@ class BottomNavBar extends StatelessWidget {
 
   BottomNavBar({required this.currentIndex, required this.onTap});
 
-
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
@@ -25,8 +24,8 @@ class BottomNavBar extends StatelessWidget {
           label: '게시판',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.star, color: Colors.black),
-          label: '베스트 게시판',
+          icon: Icon(Icons.home, color: Colors.black),
+          label: '홈화면',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.recommend, color: Colors.black),
