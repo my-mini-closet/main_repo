@@ -1,5 +1,9 @@
 C:/Users/jhkim/AndroidStudioProjects/main_repo/build/windows/x64/runner/Debug/data/icudtl.dat
 C:/Users/jhkim/AndroidStudioProjects/main_repo/build/windows/x64/runner/Debug/flutter_windows.dll
+C:/Users/jhkim/AndroidStudioProjects/main_repo/build/windows/x64/runner/Debug/cloud_firestore_plugin.lib
+C:/Users/jhkim/AndroidStudioProjects/main_repo/build/windows/x64/runner/Debug/file_selector_windows_plugin.dll
+C:/Users/jhkim/AndroidStudioProjects/main_repo/build/windows/x64/runner/Debug/firebase_core_plugin.lib
+C:/Users/jhkim/AndroidStudioProjects/main_repo/build/windows/x64/runner/Debug/firebase_storage_plugin.lib
 C:/Users/jhkim/AndroidStudioProjects/main_repo/build/windows/x64/runner/Debug/data/flutter_assets/AssetManifest.bin
 C:/Users/jhkim/AndroidStudioProjects/main_repo/build/windows/x64/runner/Debug/data/flutter_assets/AssetManifest.json
 C:/Users/jhkim/AndroidStudioProjects/main_repo/build/windows/x64/runner/Debug/data/flutter_assets/FontManifest.json

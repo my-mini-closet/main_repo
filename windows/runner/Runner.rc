@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "myminicloset" "\0"
+            VALUE "FileDescription", "main_repo" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "myminicloset" "\0"
+            VALUE "InternalName", "main_repo" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "myminicloset.exe" "\0"
-            VALUE "ProductName", "myminicloset" "\0"
+            VALUE "OriginalFilename", "main_repo.exe" "\0"
+            VALUE "ProductName", "main_repo" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
