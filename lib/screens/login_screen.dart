@@ -35,9 +35,9 @@ class LoginScreen extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 60), //간격
+                  SizedBox(height: 60),
 
-                  //로그인 폼 컨테이너
+                  // 로그인 폼 컨테이너
                   Container(
                     padding: EdgeInsets.all(16.0),
                     decoration: BoxDecoration(
@@ -95,12 +95,32 @@ class LoginScreen extends StatelessWidget {
                             // 이메일 형식 검사
                             if (emailController.text.isNotEmpty &&
                                 passwordController.text.isNotEmpty) {
-                              //로그인 된다면 메인화면으로 이동
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HomeScreen()),
-                              );
+                              // 이메일 형식 확인
+                              if (RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(emailController.text)) {
+                                // 로그인 된다면 메인화면으로 이동
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => HomeScreen()),
+                                );
+                              } else {
+                                // 잘못된 이메일 형식 경고
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: Text('로그인 실패'),
+                                    content: Text('올바른 이메일 형식을 입력해주세요.'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('확인'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
                             } else {
                               // 이메일과 패스워드 필드가 비어있으면 경고하기
                               showDialog(
@@ -147,16 +167,4 @@ class LoginScreen extends StatelessWidget {
   }
 }
 
-class HomeScreenContent extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Home'),
-      ),
-      body: Center(
-        child: Text('Welcome to Home Screen!'),
-      ),
-    );
-  }
-}
+
