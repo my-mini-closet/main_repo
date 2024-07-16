@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-
-class ClothingItem {
-  final String name;
-  final String imageUrl;
-  final String category;
-
-  ClothingItem({required this.name, required this.imageUrl, required this.category});
-}
+import 'package:myminicloset/imagerepository.dart';
+import 'package:cached_network_image/cached_network_image.dart';  // 추가
 
 class WardrobeScreen extends StatefulWidget {
   @override
@@ -16,17 +9,40 @@ class WardrobeScreen extends StatefulWidget {
 }
 
 class _WardrobeScreenState extends State<WardrobeScreen> {
-  final ImagePicker _picker = ImagePicker();
-  List<ClothingItem> _clothingItems = [];
+  final ImageRepository _imageRepository = ImageRepository();
   final List<String> _categories = ['상의', '하의', '모자', '신발', '액세서리'];
+  Map<String, List<Map<String, dynamic>>> _categoryImages = {};
+  String userId = '1234'; // 추후 로그인 기능 구현 시 userId를 사용하세요.
 
-  Future<void> _pickImage(String category) async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-    if (image != null) {
-      setState(() {
-        _clothingItems.add(ClothingItem(
-            name: 'Item', imageUrl: image.path, category: category));
-      });
+  @override
+  void initState() {
+    super.initState();
+    _fetchImages();
+  }
+
+  Future<void> _fetchImages() async {
+    List<Map<String, dynamic>> imagesData = await _imageRepository.getImages(userId);
+    setState(() {
+      _categoryImages = {
+        for (var category in _categories)
+          category: imagesData.where((data) => data['category'] == category).toList()
+      };
+    });
+  }
+
+
+  Future<void> _pickImage(String category, ImageSource source) async {
+    String userId = '1234'; // 추후 로그인 기능 구현 시 userId를 사용하세요.
+    Map<String, String>? imageInfo = await _imageRepository.uploadImage(userId, source);
+    if (imageInfo != null) {
+      await _imageRepository.saveImageInfo(
+        userId: userId,
+        docId: DateTime.now().millisecondsSinceEpoch.toString(),  // 고유한 docId 생성
+        imageUrl: imageInfo['image']!,
+        path: imageInfo['path']!,
+        category: category,  // 카테고리 저장
+      );
+      _fetchImages();
     }
   }
 
@@ -43,10 +59,41 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                   title: Text(category),
                   onTap: () {
                     Navigator.of(context).pop();
-                    _pickImage(category);
+                    _showImageSourceDialog(category);
                   },
                 );
               }).toList(),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _showImageSourceDialog(String category) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('이미지 소스 선택'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: [
+                ListTile(
+                  title: Text('갤러리'),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    _pickImage(category, ImageSource.gallery);
+                  },
+                ),
+                ListTile(
+                  title: Text('카메라'),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    _pickImage(category, ImageSource.camera);
+                  },
+                ),
+              ],
             ),
           ),
         );
@@ -80,9 +127,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
               title: Center(
                 child: Text(
                   '내 옷 등록하기!',
-                  style: TextStyle(color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold),
+                  style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               ),
               onTap: _showCategoryDialog,
@@ -104,14 +149,18 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                       category,
                       style: TextStyle(color: Colors.black),
                     ),
-                    children: _clothingItems
-                        .where((item) => item.category == category)
-                        .map((item) {
+                    children: _categoryImages[category]?.map((item) {
                       return ListTile(
-                        leading: Image.file(File(item.imageUrl), width: 50, height: 50),
-                        title: Text(item.name, style: TextStyle(color: Colors.black)),
+                        leading: CachedNetworkImage(  // CachedNetworkImage 사용
+                          imageUrl: item['image'],
+                          width: 50,
+                          height: 50,
+                          placeholder: (context, url) => CircularProgressIndicator(),  // 로딩 인디케이터 추가
+                          errorWidget: (context, url, error) => Icon(Icons.error),  // 에러 아이콘 추가
+                        ),
+                        title: Text('Item', style: TextStyle(color: Colors.black)),
                       );
-                    }).toList(),
+                    }).toList() ?? [],
                   ),
                 );
               }).toList(),
