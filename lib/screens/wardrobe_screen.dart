@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:myminicloset/imagerepository.dart';
-import 'package:cached_network_image/cached_network_image.dart';  // 추가
+import 'package:cached_network_image/cached_network_image.dart';
 
 class WardrobeScreen extends StatefulWidget {
   @override
@@ -10,9 +10,10 @@ class WardrobeScreen extends StatefulWidget {
 
 class _WardrobeScreenState extends State<WardrobeScreen> {
   final ImageRepository _imageRepository = ImageRepository();
-  final List<String> _categories = ['상의', '하의', '모자', '신발', '액세서리'];
+  final List<String> _categories = ['all', '상의', '하의', '모자', '신발', '액세서리'];
   Map<String, List<Map<String, dynamic>>> _categoryImages = {};
-  String userId = '1234'; // 추후 로그인 기능 구현 시 userId를 사용하세요.
+  String userId = '1234';
+  String _selectedCategory = 'all';
 
   @override
   void initState() {
@@ -24,12 +25,11 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
     List<Map<String, dynamic>> imagesData = await _imageRepository.getImages(userId);
     setState(() {
       _categoryImages = {
-        for (var category in _categories)
+        for (var category in _categories.where((c) => c != 'all'))
           category: imagesData.where((data) => data['category'] == category).toList()
       };
     });
   }
-
 
   Future<void> _pickImage(String category, ImageSource source) async {
     String userId = '1234'; // 추후 로그인 기능 구현 시 userId를 사용하세요.
@@ -54,7 +54,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
           title: Text('카테고리 선택'),
           content: SingleChildScrollView(
             child: ListBody(
-              children: _categories.map((category) {
+              children: _categories.where((c) => c != 'all').map((category) {
                 return ListTile(
                   title: Text(category),
                   onTap: () {
@@ -103,6 +103,11 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // 선택된 카테고리에 따라 보여줄 이미지 리스트를 결정합니다.
+    List<Map<String, dynamic>> displayedImages = _selectedCategory == 'all'
+        ? _categoryImages.values.expand((images) => images).toList()
+        : _categoryImages[_selectedCategory] ?? [];
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -111,6 +116,27 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: [
+          DropdownButton<String>(
+            value: _selectedCategory,
+            icon: Icon(Icons.arrow_downward, color: Colors.white),
+            dropdownColor: Colors.blue,
+            underline: Container(),
+            onChanged: (String? newCategory) {
+              if (newCategory != null && _categories.contains(newCategory)) {
+                setState(() {
+                  _selectedCategory = newCategory;
+                });
+              }
+            },
+            items: _categories.map<DropdownMenuItem<String>>((String category) {
+              return DropdownMenuItem<String>(
+                value: category,
+                child: Text(category == 'all' ? '전체' : category),
+              );
+            }).toList(),
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -134,36 +160,22 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
             ),
           ),
           Expanded(
-            child: ListView(
+            child: ListView.builder(
               padding: EdgeInsets.all(8.0),
-              children: _categories.map((category) {
-                return Container(
-                  margin: EdgeInsets.symmetric(vertical: 8.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25.0),
-                    border: Border.all(color: Colors.black, width: 2.0),
+              itemCount: displayedImages.length,
+              itemBuilder: (context, index) {
+                var item = displayedImages[index];
+                return ListTile(
+                  leading: CachedNetworkImage(
+                    imageUrl: item['image'],
+                    width: 50,
+                    height: 50,
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
-                  child: ExpansionTile(
-                    title: Text(
-                      category,
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    children: _categoryImages[category]?.map((item) {
-                      return ListTile(
-                        leading: CachedNetworkImage(  // CachedNetworkImage 사용
-                          imageUrl: item['image'],
-                          width: 50,
-                          height: 50,
-                          placeholder: (context, url) => CircularProgressIndicator(),  // 로딩 인디케이터 추가
-                          errorWidget: (context, url, error) => Icon(Icons.error),  // 에러 아이콘 추가
-                        ),
-                        title: Text('Item', style: TextStyle(color: Colors.black)),
-                      );
-                    }).toList() ?? [],
-                  ),
+                  title: Text('Item', style: TextStyle(color: Colors.black)),
                 );
-              }).toList(),
+              },
             ),
           ),
         ],
