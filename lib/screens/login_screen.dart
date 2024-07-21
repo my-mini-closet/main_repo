@@ -162,7 +162,7 @@ class LoginScreen extends StatelessWidget {
                           ),
                           onPressed: () async {
                             try {
-                              // 카카오톡으로 로그인 시도
+                              // 카카오톡으로 로그인
                               if (await isKakaoTalkInstalled()) {
                                 try {
                                   await UserApi.instance.loginWithKakaoTalk();
