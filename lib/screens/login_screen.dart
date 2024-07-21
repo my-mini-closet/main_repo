@@ -53,7 +53,7 @@ class LoginScreen extends StatelessWidget {
                         TextField(
                           controller: emailController,
                           decoration: InputDecoration(
-                            labelText: 'Email',
+                            labelText: '이메일',
                             labelStyle: TextStyle(color: Colors.black),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -70,7 +70,7 @@ class LoginScreen extends StatelessWidget {
                         TextField(
                           controller: passwordController,
                           decoration: InputDecoration(
-                            labelText: 'Password',
+                            labelText: '비밀번호',
                             labelStyle: TextStyle(color: Colors.black),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
