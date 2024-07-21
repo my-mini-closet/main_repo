@@ -9,8 +9,13 @@ create table users(
 	`nick_name` varchar(200) not null,
 	`created_at` timestamp default current_timestamp,
 	`updated_at` timestamp default current_timestamp,
+    `pesonal_color` varchar(200),
+    `personal_color` varchar(200),
 	constraint primary key(id)
 );
+-- personal_color 항목 추가 되었으니 mySQL에서 sql문 추가한 담에
+-- ALTER TABLE users ADD COLUMN `personal_color` varchar(200);
+-- 이 구문 사용해서 update 바람
 
 create table `boards`(
 	id bigint unsigned not null auto_increment,
