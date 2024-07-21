@@ -4,7 +4,6 @@ import 'board_screen.dart';
 import 'recommendation_screen.dart' as recommendation;
 import 'personal_color_screen.dart';
 import '../widgets/bottom_nav_bar.dart';
-import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
