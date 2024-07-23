@@ -21,6 +21,7 @@ dependencies:
   firebase_app_installations: ^0.3.0+2
   firebase_database: ^11.0.2
   kakao_flutter_sdk: ^1.9.5
+  http: ^0.13.3
 
 dev_dependencies:
   flutter_test:
