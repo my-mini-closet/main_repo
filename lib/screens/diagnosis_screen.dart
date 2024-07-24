@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'color_palette_screen.dart';
+import 'package:http/http.dart' as http;
 
 class DiagnosisScreen extends StatefulWidget {
   @override
@@ -50,6 +51,7 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
+              savePersonalColor(result);
               if (result == '여름 쿨톤' || result == '겨울 쿨톤' || result == '봄 웜톤' || result == '가을 웜톤') {
                 Navigator.push(
                   context,
@@ -92,7 +94,21 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
     }
     return '진단 결과 없음';
   }
+  Future<void> savePersonalColor(String personalColor) async {
+    final response = await http.post(
+      Uri.parse('http://localhost:8080/api/users/updatePersonalColor'),
+      body: {
+        'email': 'your-email@example.com',  // 사용자의 이메일을 전달, 로그인 기능 구현시 추가
+        'personalColor': personalColor,
+      },
+    );
 
+    if (response.statusCode == 200) {
+      print('Personal color updated successfully');
+    } else {
+      print('Failed to update personal color');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
