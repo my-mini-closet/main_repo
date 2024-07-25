@@ -255,7 +255,7 @@
     },
     {
       "name": "flutter_cache_manager",
-      "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_cache_manager-3.3.2",
+      "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_cache_manager-3.3.1",
       "packageUri": "lib/",
       "languageVersion": "2.17"
     },
@@ -285,9 +285,9 @@
     },
     {
       "name": "http",
-      "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/http-1.2.2",
+      "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/http-0.13.6",
       "packageUri": "lib/",
-      "languageVersion": "3.3"
+      "languageVersion": "2.19"
     },
     {
       "name": "http_parser",
@@ -716,7 +716,7 @@
       "languageVersion": "3.4"
     }
   ],
-  "generated": "2024-07-21T15:25:34.717460Z",
+  "generated": "2024-07-25T05:40:50.271025Z",
   "generator": "pub",
   "generatorVersion": "3.4.3",
   "flutterRoot": "file:///C:/Users/jhkim/AppData/Local/Flutter/flutter",
