@@ -47,8 +47,6 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -64,7 +62,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 25),
             _weather != null
                 ? _buildWeatherInfo()
                 : Center(child: CircularProgressIndicator()),
@@ -73,11 +71,9 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
               color: Colors.black,
               thickness: 1,
             ),
-
             SizedBox(height: 16),
             _buildShortcutIcons(),
             SizedBox(height: 45),
-
             GestureDetector(
               onTap: () => widget.onTap(0),
               child: Container(
@@ -102,7 +98,6 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                 ),
               ),
             ),
-
             SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -199,8 +194,8 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
     final tempMin = _weather!.tempMin.toStringAsFixed(1);
     final icon = _weather!.icon;
     final weatherIcon = icon != null
-        ? 'https://openweathermap.org/img/wn/${icon}@2x.png'
-        : 'https://openweathermap.org/img/wn/01d@2x.png'; // 기본 아이콘
+        ? 'https://openweathermap.org/img/wn/${icon}@4x.png'
+        : 'https://openweathermap.org/img/wn/01d@4x.png';
 
     return Container(
       padding: EdgeInsets.all(16.0),
@@ -208,57 +203,55 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
         color: Colors.blueAccent,
         borderRadius: BorderRadius.circular(20.0),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Image.network(
+            weatherIcon,
+            width: 100, // 아이콘 크기 증가
+            height: 100, // 아이콘 크기 증가
+            errorBuilder: (context, error, stackTrace) {
+              return Icon(Icons.error, size: 100, color: Colors.red); // 기본 오류 아이콘
+            },
+          ),
+          SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '현재 온도',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  '${temp}°C',
+                  style: TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Image.network(
-                weatherIcon,
-                width: 50,
-                height: 50,
-                errorBuilder: (context, error, stackTrace) {
-                  return Icon(Icons.error, size: 50, color: Colors.red); // 기본 오류 아이콘
-                },
+              Text(
+                '최고 온도: ${tempMax}°C',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                ),
               ),
-              SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '현재 온도',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Text(
-                      '${temp}°C',
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      '최고 온도: ${tempMax}°C',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      '최저 온도: ${tempMin}°C',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+              SizedBox(height: 4),
+              Text(
+                '최저 온도: ${tempMin}°C',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
                 ),
               ),
             ],
@@ -267,7 +260,6 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
       ),
     );
   }
-
 
   Widget _buildShortcutIcons() {
     return Column(
@@ -299,7 +291,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
       onTap: () => widget.onTap(index),
       child: Column(
         children: [
-          Icon(icon, size: 40),
+          Icon(icon, size: 48), // 아이콘 크기 증가
           SizedBox(height: 4),
           Text(
             text,

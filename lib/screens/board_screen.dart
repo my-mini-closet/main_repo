@@ -1,6 +1,23 @@
 import 'package:flutter/material.dart';
 
-class BoardScreen extends StatelessWidget {
+class BoardScreen extends StatefulWidget {
+  @override
+  _BoardScreenState createState() => _BoardScreenState();
+}
+
+class _BoardScreenState extends State<BoardScreen> {
+  String _selectedCategory = 'latest';
+
+  List<Map<String, dynamic>> _posts = [
+    //예시 이미지..
+    {'image': 'https://via.placeholder.com/150', 'title': '여름 20대 남자 코디추천', 'author': '김무신사'},
+    {'image': 'https://via.placeholder.com/150', 'title': '여름 20대 여자 코디추천', 'author': '김유저'},
+    {'image': 'https://via.placeholder.com/150', 'title': 'Title 3', 'author': 'User3'},
+    {'image': 'https://via.placeholder.com/150', 'title': 'Title 4', 'author': 'User4'},
+    {'image': 'https://via.placeholder.com/150', 'title': 'Title 5', 'author': 'User5'},
+    {'image': 'https://via.placeholder.com/150', 'title': 'Title 6', 'author': 'User6'},
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,120 +46,213 @@ class BoardScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildSectionTitle('베스트 코디'),
-            _buildBestCoordiList(),
-            SizedBox(height: 20),
-            _buildSectionTitle('내 글 등록하기'),
-            _buildRoundedButton(context, '내 글 등록하기', _onRegisterPost),
-            SizedBox(height: 20),
-            _buildSectionTitle('퍼스널 컬러별 추천 코디'),
-            _buildPersonalColorList(),
-          ],
-        ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: _buildCategorySelector(),
+          ),
+          Expanded(
+            child: _buildPostGrid(),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _onRegisterPost,
+        child: Icon(Icons.add),
+        backgroundColor: Colors.pinkAccent,
       ),
     );
   }
 
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+  Widget _buildCategorySelector() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildCategoryButton('최신순', 'latest'),
+        _buildCategoryButton('인기순', 'popular'),
+        _buildCategoryButton('내글', 'myPosts'),
+      ],
+    );
+  }
+
+  Widget _buildCategoryButton(String title, String category) {
+    return ElevatedButton(
+      onPressed: () {
+        setState(() {
+          _selectedCategory = category;
+        });
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: _selectedCategory == category ? Colors.black : Colors.grey,
+      ),
       child: Text(
         title,
         style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
+          color: Colors.white,
         ),
       ),
     );
   }
 
-  Widget _buildBestCoordiList() {
-    // 베스트 코디를 보여주기 위한 리스트
-    return Container(
-      height: 100,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 5, // 예시 아이템 개수
-        itemBuilder: (context, index) {
-          return Container(
-            width: 150,
-            margin: EdgeInsets.symmetric(horizontal: 8.0),
+  Widget _buildPostGrid() {
+    return GridView.builder(
+      padding: const EdgeInsets.all(8.0),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 8.0,
+        mainAxisSpacing: 8.0,
+        childAspectRatio: 1.0,
+      ),
+      itemCount: _posts.length,
+      itemBuilder: (context, index) {
+        var post = _posts[index];
+        return GestureDetector(
+          onTap: () {
+            _onPostTap(context, post);
+          },
+          child: Container(
             decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(16.0),
-            ),
-            child: Center(
-              child: Text(
-                '코디 ${index + 1}',
-                style: TextStyle(color: Colors.black),
+              image: DecorationImage(
+                image: NetworkImage(post['image']),
+                fit: BoxFit.cover,
               ),
+              borderRadius: BorderRadius.circular(8.0),
             ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildRoundedButton(BuildContext context, String text, VoidCallback onPressed) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.black, // Change background color to black
-        borderRadius: BorderRadius.circular(16.0),
-      ),
-      child: ElevatedButton.icon(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.white, backgroundColor: Colors.black,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          padding: EdgeInsets.all(16.0),
-        ),
-        icon: Icon(Icons.edit, size: 24), // Adds pencil icon
-        label: Text(
-          text,
-          style: TextStyle(
-            fontSize: 20, // Increase font size
-          ),
-        ),
-      ),
-    );
-  }
-
-
-  void _onRegisterPost() {
-    // 내 글 등록하기 버튼 클릭 시 기능 구현
-    print('내 글 등록하기 클릭됨');
-  }
-
-  Widget _buildPersonalColorList() {
-    // 퍼스널 컬러별 추천 코디를 보여주는 리스트
-    final colors = ['여름 쿨톤', '겨울 쿨톤', '가을 웜톤', '봄 웜톤'];
-    return Column(
-      children: colors.map((color) {
-        return Container(
-          margin: EdgeInsets.symmetric(vertical: 8.0),
-          decoration: BoxDecoration(
-            color: Colors.grey[300],
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          child: ListTile(
-            title: Text(
-              color,
-              style: TextStyle(color: Colors.black),
-            ),
-            onTap: () {
-              print('$color 클릭됨');
-            },
           ),
         );
-      }).toList(),
+      },
+    );
+  }
+
+  void _onPostTap(BuildContext context, Map<String, dynamic> post) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PostDetailScreen(post: post),
+      ),
+    );
+  }
+
+  void _onRegisterPost() {
+    print('내 글 등록하기 클릭됨');
+  }
+}
+
+class PostDetailScreen extends StatefulWidget {
+  final Map<String, dynamic> post;
+
+  PostDetailScreen({required this.post});
+
+  @override
+  _PostDetailScreenState createState() => _PostDetailScreenState();
+}
+
+class _PostDetailScreenState extends State<PostDetailScreen> {
+  int likes = 0;
+  int dislikes = 0;
+  bool isLiked = false;
+  bool isDisliked = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          '게시글 상세',
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 20,
+                  child: Text(widget.post['author'][0]),
+                ),
+                SizedBox(width: 8),
+                Text(
+                  widget.post['author'],
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            Center(
+              child: Text(
+                widget.post['title'],
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ),
+            SizedBox(height: 10),
+            Center(
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.8,
+                height: MediaQuery.of(context).size.width * 0.8,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(widget.post['image']),
+                    fit: BoxFit.cover,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.thumb_up),
+                  color: isLiked ? Colors.red : Colors.black,
+                  onPressed: () {
+                    setState(() {
+                      if (isLiked) {
+                        likes--;
+                        isLiked = false;
+                      } else {
+                        if (isDisliked) {
+                          dislikes--;
+                          isDisliked = false;
+                        }
+                        likes++;
+                        isLiked = true;
+                      }
+                    });
+                  },
+                ),
+
+                Text(likes.toString()),
+                IconButton(
+                  icon: Icon(Icons.thumb_down),
+                  color: isDisliked ? Colors.red : Colors.black,
+                  onPressed: () {
+                    setState(() {
+                      if (isDisliked) {
+                        dislikes--;
+                        isDisliked = false;
+                      } else {
+                        if (isLiked) {
+                          likes--;
+                          isLiked = false;
+                        }
+                        dislikes++;
+                        isDisliked = true;
+                      }
+                    });
+                  },
+                ),
+                Text(dislikes.toString()),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -160,20 +160,22 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
+            child: GridView.builder(
               padding: EdgeInsets.all(8.0),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 8.0,
+                mainAxisSpacing: 8.0,
+                childAspectRatio: 1.0,
+              ),
               itemCount: displayedImages.length,
               itemBuilder: (context, index) {
                 var item = displayedImages[index];
-                return ListTile(
-                  leading: CachedNetworkImage(
-                    imageUrl: item['image'],
-                    width: 50,
-                    height: 50,
-                    placeholder: (context, url) => CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  ),
-                  title: Text('Item', style: TextStyle(color: Colors.black)),
+                return CachedNetworkImage(
+                  imageUrl: item['image'],
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
                 );
               },
             ),
