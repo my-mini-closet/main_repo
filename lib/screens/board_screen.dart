@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class BoardScreen extends StatefulWidget {
   @override
@@ -7,15 +9,13 @@ class BoardScreen extends StatefulWidget {
 
 class _BoardScreenState extends State<BoardScreen> {
   String _selectedCategory = 'latest';
-
   List<Map<String, dynamic>> _posts = [
-    //예시 이미지..
-    {'image': 'https://via.placeholder.com/150', 'title': '여름 20대 남자 코디추천', 'author': '김무신사'},
-    {'image': 'https://via.placeholder.com/150', 'title': '여름 20대 여자 코디추천', 'author': '김유저'},
-    {'image': 'https://via.placeholder.com/150', 'title': 'Title 3', 'author': 'User3'},
-    {'image': 'https://via.placeholder.com/150', 'title': 'Title 4', 'author': 'User4'},
-    {'image': 'https://via.placeholder.com/150', 'title': 'Title 5', 'author': 'User5'},
-    {'image': 'https://via.placeholder.com/150', 'title': 'Title 6', 'author': 'User6'},
+    {'image': 'https://via.placeholder.com/150', 'title': '여름 20대 남자 코디추천', 'author': '김무신사', 'description': '여름 패션 추천합니다.'},
+    {'image': 'https://via.placeholder.com/150', 'title': '여름 20대 여자 코디추천', 'author': '김유저', 'description': '여름 여자 패션 추천합니다.'},
+    {'image': 'https://via.placeholder.com/150', 'title': 'Title 3', 'author': 'User3', 'description': ''},
+    {'image': 'https://via.placeholder.com/150', 'title': 'Title 4', 'author': 'User4', 'description': ''},
+    {'image': 'https://via.placeholder.com/150', 'title': 'Title 5', 'author': 'User5', 'description': ''},
+    {'image': 'https://via.placeholder.com/150', 'title': 'Title 6', 'author': 'User6', 'description': ''},
   ];
 
   @override
@@ -114,7 +114,7 @@ class _BoardScreenState extends State<BoardScreen> {
           child: Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(post['image']),
+                image: NetworkImage(post['image'] ?? 'https://via.placeholder.com/150'),
                 fit: BoxFit.cover,
               ),
               borderRadius: BorderRadius.circular(8.0),
@@ -135,7 +135,18 @@ class _BoardScreenState extends State<BoardScreen> {
   }
 
   void _onRegisterPost() {
-    print('내 글 등록하기 클릭됨');
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddPostScreen(
+          onPostAdded: (newPost) {
+            setState(() {
+              _posts.add(newPost);
+            });
+          },
+        ),
+      ),
+    );
   }
 }
 
@@ -174,11 +185,14 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               children: [
                 CircleAvatar(
                   radius: 20,
-                  child: Text(widget.post['author'][0]),
+                  child: Text(
+                    (widget.post['author'] as String?)?.substring(0, 1) ?? 'U',
+                    style: TextStyle(fontSize: 20),
+                  ),
                 ),
                 SizedBox(width: 8),
                 Text(
-                  widget.post['author'],
+                  widget.post['author'] as String? ?? 'Unknown',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ],
@@ -186,7 +200,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             SizedBox(height: 20),
             Center(
               child: Text(
-                widget.post['title'],
+                widget.post['title'] as String? ?? 'No Title',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
@@ -194,10 +208,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             Center(
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.8,
-                height: MediaQuery.of(context).size.width * 0.8,
+                height: MediaQuery.of(context).size.width * 0.6,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(widget.post['image']),
+                    image: NetworkImage(widget.post['image'] as String? ?? 'https://via.placeholder.com/150'),
                     fit: BoxFit.cover,
                   ),
                   borderRadius: BorderRadius.circular(8.0),
@@ -226,7 +240,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                     });
                   },
                 ),
-
                 Text(likes.toString()),
                 IconButton(
                   icon: Icon(Icons.thumb_down),
@@ -250,6 +263,11 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 Text(dislikes.toString()),
               ],
             ),
+            SizedBox(height: 20),
+            Text(
+              widget.post['description'] as String? ?? '설명 없음',
+              style: TextStyle(fontSize: 16),
+            ),
           ],
         ),
       ),
@@ -257,8 +275,100 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 }
 
-void main() {
-  runApp(MaterialApp(
-    home: BoardScreen(),
-  ));
+
+class AddPostScreen extends StatefulWidget {
+  final Function(Map<String, dynamic>) onPostAdded;
+
+  AddPostScreen({required this.onPostAdded});
+
+  @override
+  _AddPostScreenState createState() => _AddPostScreenState();
+}
+
+class _AddPostScreenState extends State<AddPostScreen> {
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  File? _imageFile;
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedFile != null) {
+        _imageFile = File(pickedFile.path);
+      }
+    });
+  }
+
+  Future<void> _takePhoto() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+    setState(() {
+      if (pickedFile != null) {
+        _imageFile = File(pickedFile.path);
+      }
+    });
+  }
+
+  void _submitPost() {
+    if (_titleController.text.isNotEmpty && _imageFile != null) {
+      final newPost = {
+        'image': _imageFile!.path,
+        'title': _titleController.text,
+        'author': '유저',
+        'description': _descriptionController.text.isNotEmpty ? _descriptionController.text : '설명 없음',
+      };
+      widget.onPostAdded(newPost);
+      Navigator.pop(context);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('새 게시글 등록'),
+        backgroundColor: Colors.pinkAccent,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: _titleController,
+              decoration: InputDecoration(labelText: '제목'),
+            ),
+            SizedBox(height: 10),
+            _imageFile == null
+                ? Text('사진을 선택하세요')
+                : Image.file(_imageFile!),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: _pickImage,
+                  child: Text('갤러리에서 선택'),
+                ),
+                SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: _takePhoto,
+                  child: Text('카메라로 촬영'),
+                ),
+              ],
+            ),
+            SizedBox(height: 10),
+            TextField(
+              controller: _descriptionController,
+              decoration: InputDecoration(labelText: '짧은 코멘트'),
+              maxLines: 3,
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _submitPost,
+              child: Text('게시글 등록'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
