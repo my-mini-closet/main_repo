@@ -11,16 +11,30 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
   final String question = '나와 어울리는 색을 선택해주세요';
 
   final List<List<Color>> options = [
-    [Colors.lightBlue[100] ?? Colors.blue[100]!, Colors.deepPurple[100] ?? Colors.purple[100]!],
-    [Colors.blue[800] ?? Colors.blue[900]!, Colors.purple[800] ?? Colors.purple[900]!],
-    [Colors.yellowAccent[100] ?? Colors.yellow[100]!, Colors.pink[100] ?? Colors.pink[200]!],
-    [Colors.orange[800] ?? Colors.orange[900]!, Colors.yellow[800] ?? Colors.yellow[900]!],
-    [Colors.deepPurple[100] ?? Colors.purple[100]!, Colors.purpleAccent[100] ?? Colors.purple[100]!],
-    [Colors.lightBlue[100] ?? Colors.blue[100]!, Colors.lightBlueAccent[800] ?? Colors.blueAccent[700]!],
-    [Color(0xFFFFFDE7), Colors.amber[100] ?? Colors.amber[200]!],
-    [Colors.orange[800] ?? Colors.orange[900]!, Color(0xFFF57F17)],
-    [Color(0xEBC8FFFF), Colors.lightBlue[100] ?? Colors.blue[100]!],
-    [Colors.orange[800] ?? Colors.orange[900]!, Colors.yellow[800] ?? Colors.yellow[900]!],
+
+    [Colors.lightBlue[100]!, Colors.deepPurple[100]!],
+    [Colors.blue[100]!, Colors.purple[100]!],
+    [Colors.cyan[200]!, Colors.teal[100]!],
+
+    [Colors.blue[800]!, Colors.purple[800]!],
+    [Colors.indigo[600]!, Colors.blueGrey[700]!],
+    [Colors.blueGrey[300]!, Colors.cyan[700]!],
+
+    [Colors.yellowAccent[100]!, Colors.pink[100]!],
+    [Colors.orange[200]!, Colors.yellow[200]!],
+    [Colors.amber[200]!, Colors.orange[300]!],
+
+    [Colors.orange[800]!, Colors.yellow[800]!],
+    [Colors.brown[700]!, Colors.deepOrange[700]!],
+    [Colors.red[400]!, Colors.brown[300]!],
+
+    // 추가 색상
+    [Colors.green[300]!, Colors.lime[300]!],
+    [Colors.purple[200]!, Colors.purpleAccent[200]!],
+    [Colors.grey[300]!, Colors.blueGrey[300]!],
+    [Colors.teal[300]!, Colors.green[400]!],
+    [Colors.red[300]!, Colors.redAccent[200]!],
+    [Colors.pink[300]!, Colors.deepOrange[300]!],
   ];
 
   int currentQuestionIndex = 0;

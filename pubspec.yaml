@@ -20,8 +20,8 @@ dependencies:
   image_picker: ^1.1.2
   firebase_app_installations: ^0.3.0+2
   firebase_database: ^11.0.2
-  kakao_flutter_sdk: ^1.9.5
   http: ^0.13.3
+  kakao_flutter_sdk_user: ^1.9.5
 
 dev_dependencies:
   flutter_test:

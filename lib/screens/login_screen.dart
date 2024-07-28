@@ -1,11 +1,24 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 import 'register_screen.dart';
-import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:myminicloset/screens/main_view_model.dart';
+import 'package:myminicloset/screens/kakao_login.dart'; // KakaoLogin import
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  late final MainViewModel viewModel; // Add viewModel as a late variable
+
+  @override
+  void initState() {
+    super.initState();
+    viewModel = MainViewModel(KakaoLogin()); // Initialize viewModel with KakaoLogin
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -154,45 +167,37 @@ class LoginScreen extends StatelessWidget {
                         ElevatedButton(
                           key: Key('kakaoLoginButton'),
                           style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.black, backgroundColor: Colors.yellow,
+                            foregroundColor: Colors.black,
+                            backgroundColor: Colors.yellow,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(25),
                             ),
                             padding: EdgeInsets.symmetric(vertical: 12),
                           ),
                           onPressed: () async {
-                            try {
-                              // 카카오톡으로 로그인
-                              if (await isKakaoTalkInstalled()) {
-                                try {
-                                  await UserApi.instance.loginWithKakaoTalk();
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => HomeScreen()),
-                                  );
-                                } catch (e) {
-                                  // 카카오톡 로그인 실패 시 예외 처리
-                                  print('카카오톡으로 로그인 실패: $e');
-                                }
-                              } else {
-                                // 카카오톡 미설치 시 웹뷰로 로그인 시도
-                                try {
-                                  await UserApi.instance
-                                      .loginWithKakaoAccount();
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => HomeScreen()),
-                                  );
-                                } catch (e) {
-                                  // 카카오 웹뷰 로그인 실패 시 예외 처리
-                                  print('카카오 계정으로 로그인 실패: $e');
-                                }
-                              }
-                            } catch (e) {
-                              // 로그인 실패 시 예외 처리
-                              print('로그인 실패: $e');
+                            bool success = await viewModel.login(); // 카카오 로그인 호출
+                            if (success) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomeScreen()),
+                              );
+                            } else {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Text('로그인 실패'),
+                                  content: Text('카카오 로그인에 실패했습니다.'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('확인'),
+                                    ),
+                                  ],
+                                ),
+                              );
                             }
                           },
                           child: Row(

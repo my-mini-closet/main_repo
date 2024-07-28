@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'wardrobe_screen.dart' as wardrobe;
+import 'wardrobe_screen.dart';
 import 'board_screen.dart';
-import 'recommendation_screen.dart' as recommendation;
+import 'recommendation_screen.dart';
 import 'personal_color_screen.dart';
 import '../widgets/bottom_nav_bar.dart';
 import 'home_screen_content.dart';
@@ -20,14 +20,14 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _screens = [
-      wardrobe.WardrobeScreen(),
+      WardrobeScreen(),
       BoardScreen(),
       HomeScreenContent(onTap: (int index) {
         setState(() {
           _currentIndex = index;
         });
       }),
-      recommendation.RecommendationScreen(),
+      RecommendationScreen(),
       PersonalColorScreen(),
     ];
   }
