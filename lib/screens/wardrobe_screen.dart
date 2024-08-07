@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:myminicloset/imagerepository.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'recommendation_screen.dart'; // RecommendationScreen 클래스 import
 
 class WardrobeScreen extends StatefulWidget {
   @override
@@ -32,7 +33,6 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
   }
 
   Future<void> _pickImage(String category, ImageSource source) async {
-    String userId = '1234'; // 추후 로그인 기능 구현 시 userId를 사용하세요.
     Map<String, String>? imageInfo = await _imageRepository.uploadImage(userId, source);
     if (imageInfo != null) {
       await _imageRepository.saveImageInfo(
@@ -101,9 +101,15 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
     );
   }
 
+  void _navigateToRecommendationScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => RecommendationScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // 선택된 카테고리에 따라 보여줄 이미지 리스트를 결정합니다.
     List<Map<String, dynamic>> displayedImages = _selectedCategory == 'all'
         ? _categoryImages.values.expand((images) => images).toList()
         : _categoryImages[_selectedCategory] ?? [];
@@ -181,6 +187,13 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
             ),
           ),
         ],
+      ),
+
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _navigateToRecommendationScreen,
+        label: Text('코디하기'),
+        backgroundColor: Colors.lightBlueAccent,
+        icon: Icon(Icons.android),
       ),
     );
   }

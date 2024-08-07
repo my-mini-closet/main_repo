@@ -82,6 +82,14 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                 decoration: BoxDecoration(
                   color: Colors.black,
                   borderRadius: BorderRadius.circular(20.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      spreadRadius: 2,
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: Center(
                   child: Row(
@@ -111,6 +119,14 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20.0),
                       border: Border.all(color: Colors.black, width: 2.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          spreadRadius: 1,
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: Center(
                       child: Row(
@@ -135,6 +151,14 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                     decoration: BoxDecoration(
                       color: Colors.pink,
                       borderRadius: BorderRadius.circular(20.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          spreadRadius: 1,
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: Center(
                       child: Row(
@@ -162,6 +186,14 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                 decoration: BoxDecoration(
                   color: Color(0xFFFBC02D),
                   borderRadius: BorderRadius.circular(20.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: Center(
                   child: Row(
@@ -202,15 +234,23 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
       decoration: BoxDecoration(
         color: Colors.blueAccent,
         borderRadius: BorderRadius.circular(20.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            spreadRadius: 2,
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         children: [
           Image.network(
             weatherIcon,
-            width: 100, // 아이콘 크기 증가
-            height: 100, // 아이콘 크기 증가
+            width: 100,
+            height: 100,
             errorBuilder: (context, error, stackTrace) {
-              return Icon(Icons.error, size: 100, color: Colors.red); // 기본 오류 아이콘
+              return Icon(Icons.error, size: 100, color: Colors.red);
             },
           ),
           SizedBox(width: 16),
@@ -228,7 +268,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                 Text(
                   '${temp}°C',
                   style: TextStyle(
-                    fontSize: 36,
+                    fontSize: 30,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
@@ -242,7 +282,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
               Text(
                 '최고 온도: ${tempMax}°C',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 13,
                   color: Colors.white,
                 ),
               ),
@@ -250,7 +290,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
               Text(
                 '최저 온도: ${tempMin}°C',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 13,
                   color: Colors.white,
                 ),
               ),
@@ -291,7 +331,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
       onTap: () => widget.onTap(index),
       child: Column(
         children: [
-          Icon(icon, size: 48), // 아이콘 크기 증가
+          Icon(icon, size: 48),
           SizedBox(height: 4),
           Text(
             text,
