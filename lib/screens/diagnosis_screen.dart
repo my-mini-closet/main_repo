@@ -109,8 +109,13 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
     return '진단 결과 없음';
   }
   Future<void> savePersonalColor(String personalColor) async {
+    /*
+    String email = "user@example.com"; // Replace with the actual user's email
+    String url = "http://localhost:8080/api/users/updatePersonalColor?email=$email&personalColor=$result";
+    */
+
     final response = await http.post(
-      Uri.parse('http://localhost:8080/api/users/updatePersonalColor'),
+      Uri.parse('http://localhost:8080/api/users/updatePersonalColor'), // 고민중
       body: {
         'email': 'your-email@example.com',  // 사용자의 이메일을 전달, 로그인 기능 구현시 추가
         'personalColor': personalColor,

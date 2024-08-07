@@ -4,12 +4,12 @@ use mycloset;
 
 create table users(
 	id bigint unsigned not null auto_increment,
-    	`user_email` varchar(200) not null unique,
+    `user_email` varchar(200) not null unique,
 	`password` varchar(200),
 	`nick_name` varchar(200) not null,
 	`created_at` timestamp default current_timestamp,
 	`updated_at` timestamp default current_timestamp,
-    	`personal_color` varchar(200),
+    `personal_color` varchar(200),
 	constraint primary key(id)
 );
 -- personal_color 항목 추가 되었으니 mySQL에서 sql문 추가한 담에
@@ -27,5 +27,16 @@ create table `boards`(
 	`updated_at` timestamp default current_timestamp,
 	constraint primary key(id),
 	constraint foreign key(`user`) references users(id)
+);
+
+create table images(
+id bigint unsigned not null auto_increment,
+`path` varchar(500) not null,
+`url` varchar(500) not null,
+`board` bigint unsigned not null,
+`created_at` timestamp default current_timestamp,
+`updated_at` timestamp default current_timestamp,
+constraint primary key(id),
+constraint foreign key(`board`) references `boards`(id)
 );
 
