@@ -356,12 +356,6 @@
       "languageVersion": "3.0"
     },
     {
-      "name": "kakao_flutter_sdk",
-      "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk-1.9.5",
-      "packageUri": "lib/",
-      "languageVersion": "3.3"
-    },
-    {
       "name": "kakao_flutter_sdk_auth",
       "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_auth-1.9.5",
       "packageUri": "lib/",
@@ -370,36 +364,6 @@
     {
       "name": "kakao_flutter_sdk_common",
       "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_common-1.9.5",
-      "packageUri": "lib/",
-      "languageVersion": "3.3"
-    },
-    {
-      "name": "kakao_flutter_sdk_friend",
-      "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_friend-1.9.5",
-      "packageUri": "lib/",
-      "languageVersion": "3.3"
-    },
-    {
-      "name": "kakao_flutter_sdk_navi",
-      "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_navi-1.9.5",
-      "packageUri": "lib/",
-      "languageVersion": "3.3"
-    },
-    {
-      "name": "kakao_flutter_sdk_share",
-      "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_share-1.9.5",
-      "packageUri": "lib/",
-      "languageVersion": "3.3"
-    },
-    {
-      "name": "kakao_flutter_sdk_talk",
-      "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_talk-1.9.5",
-      "packageUri": "lib/",
-      "languageVersion": "3.3"
-    },
-    {
-      "name": "kakao_flutter_sdk_template",
-      "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_template-1.9.5",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -680,30 +644,6 @@
       "languageVersion": "3.3"
     },
     {
-      "name": "webview_flutter",
-      "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter-4.8.0",
-      "packageUri": "lib/",
-      "languageVersion": "3.2"
-    },
-    {
-      "name": "webview_flutter_android",
-      "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_android-3.16.4",
-      "packageUri": "lib/",
-      "languageVersion": "3.4"
-    },
-    {
-      "name": "webview_flutter_platform_interface",
-      "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_platform_interface-2.10.0",
-      "packageUri": "lib/",
-      "languageVersion": "3.0"
-    },
-    {
-      "name": "webview_flutter_wkwebview",
-      "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_wkwebview-3.14.0",
-      "packageUri": "lib/",
-      "languageVersion": "3.2"
-    },
-    {
       "name": "xdg_directories",
       "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/xdg_directories-1.0.4",
       "packageUri": "lib/",
@@ -716,7 +656,7 @@
       "languageVersion": "3.4"
     }
   ],
-  "generated": "2024-07-25T05:40:50.271025Z",
+  "generated": "2024-08-01T05:09:36.728185Z",
   "generator": "pub",
   "generatorVersion": "3.4.3",
   "flutterRoot": "file:///C:/Users/jhkim/AppData/Local/Flutter/flutter",

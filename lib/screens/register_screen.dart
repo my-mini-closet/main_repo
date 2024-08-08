@@ -1,10 +1,49 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class RegisterScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
   final TextEditingController nicknameController = TextEditingController();
+
+  Future<void> signupUser(BuildContext context) async {
+    final url = 'http://172.30.1.87:8080/api/users/signup'; // 나중에 서버 배포시 url 변경 지금 실행해보고 싶으면 ipconfig로 본인 ip로 확인
+    final response = await http.post(
+      Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+        'userEmail': emailController.text,
+        'password': passwordController.text,
+        'userNickname': nicknameController.text,
+        }),
+    );
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+    if (response.statusCode == 201) {
+      // 서버 응답이 성공적일 때
+      Navigator.pop(context);
+    } else {
+      // 서버 응답이 실패일 때
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('회원가입 실패'),
+          content: Text('서버에서 오류가 발생했습니다.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('확인'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +138,7 @@ class RegisterScreen extends StatelessWidget {
                 ),
                 onPressed: () {
                   if (passwordController.text == confirmPasswordController.text) {
-                    Navigator.pop(context);
+                    signupUser(context);
                   } else {
                     showDialog(
                       context: context,
