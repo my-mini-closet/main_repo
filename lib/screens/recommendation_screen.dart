@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:myminicloset/imagerepository.dart';
-import 'package:image_picker/image_picker.dart';
 
 class RecommendationScreen extends StatefulWidget {
   @override
@@ -11,6 +10,7 @@ class RecommendationScreen extends StatefulWidget {
 class _RecommendationScreenState extends State<RecommendationScreen> {
   final ImageRepository _imageRepository = ImageRepository();
   List<Map<String, dynamic>> _uploadedImages = [];
+  List<Map<String, dynamic>> _selectedImages = [];
   bool _isLoading = false;
 
   @override
@@ -31,27 +31,13 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
     }
   }
 
-  Future<void> _uploadImage() async {
+  void _toggleSelection(Map<String, dynamic> image) {
     setState(() {
-      _isLoading = true;
-    });
-
-    String userId = '1234'; // 추후 로그인 기능 구현 시 userId를 사용하세요.
-    Map<String, String>? imageData = await _imageRepository.uploadImage(userId, ImageSource.gallery);
-
-    if (imageData != null) {
-      await _imageRepository.saveImageInfo(
-        userId: userId,
-        docId: DateTime.now().millisecondsSinceEpoch.toString(),
-        imageUrl: imageData['image']!,
-        path: imageData['path']!,
-        category: 'uploaded',
-      );
-      _fetchImages();
-    }
-
-    setState(() {
-      _isLoading = false;
+      if (_selectedImages.contains(image)) {
+        _selectedImages.remove(image);
+      } else {
+        _selectedImages.add(image);
+      }
     });
   }
 
@@ -60,15 +46,11 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
       _isLoading = true;
     });
 
-    // AI 코디 추천 로직 추가
+    // AI 코디 생성 로직 추가해야됨..
     await Future.delayed(Duration(seconds: 2));
 
     setState(() {
       _isLoading = false;
-      _uploadedImages.add({
-        'image': 'https://via.placeholder.com/150', // 예시 이미지 URL
-        'category': 'AI 코디 결과'
-      });
     });
   }
 
@@ -86,28 +68,71 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('나만의 옷장으로 AI가 추천하는 코디를 받아보세요!',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildButton(
-                  icon: Icons.upload_file,
-                  label: '옷 사진 업로드',
-                  color: Colors.pinkAccent,
-                  onPressed: _uploadImage,
-                ),
-                _buildButton(
-                  icon: Icons.style,
-                  label: 'AI 코디 생성',
-                  color: Colors.purple,
-                  onPressed: _generateOutfit,
-                ),
-              ],
+            Text(
+              '나만의 옷장으로 AI가 추천하는 코디를 받아보세요!',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-
+            SizedBox(height: 20),
+            Container(
+              padding: EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Colors.yellow[100],
+                borderRadius: BorderRadius.circular(10.0),
+                border: Border.all(color: Colors.yellow, width: 2),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '장바구니',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10),
+                  Container(
+                    height: 120,
+                    child: _selectedImages.isEmpty
+                        ? Center(child: Text('선택된 사진이 없습니다. 옷을 담아보세요!'))
+                        : SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: _selectedImages.map((image) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 10.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: CachedNetworkImage(
+                                imageUrl: image['image'],
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) => CircularProgressIndicator(),
+                                errorWidget: (context, url, error) => Icon(Icons.error),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _generateOutfit,
+              child: Text(
+                'AI 코디 생성하기',
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                minimumSize: Size(double.infinity, 60),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                elevation: 5,
+              ),
+            ),
             SizedBox(height: 20),
             Expanded(
               child: _isLoading
@@ -122,58 +147,35 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
                 ),
                 itemCount: _uploadedImages.length,
                 itemBuilder: (context, index) {
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(10.0),
-                    child: CachedNetworkImage(
-                      imageUrl: _uploadedImages[index]['image'],
-                      placeholder: (context, url) => CircularProgressIndicator(),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                      fit: BoxFit.cover,
+                  final image = _uploadedImages[index];
+                  final isSelected = _selectedImages.contains(image);
+
+                  return GestureDetector(
+                    onTap: () => _toggleSelection(image),
+                    child: Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: CachedNetworkImage(
+                            imageUrl: image['image'],
+                            placeholder: (context, url) => CircularProgressIndicator(),
+                            errorWidget: (context, url, error) => Icon(Icons.error),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        if (isSelected)
+                          Positioned(
+                            top: 8,
+                            right: 8,
+                            child: Icon(Icons.check_circle, color: Colors.green, size: 30),
+                          ),
+                      ],
                     ),
                   );
                 },
               ),
             ),
-            if (!_isLoading && _uploadedImages.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Text('AI 추천 코디:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              ),
-            if (!_isLoading && _uploadedImages.isNotEmpty)
-              Container(
-                height: 200,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.grey[200],
-                ),
-                child: Center(
-                  child: Text(
-                    'AI 코디 결과 이미지',
-                    style: TextStyle(fontSize: 18, color: Colors.black54),
-                  ),
-                ),
-              ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildButton({
-    required IconData icon,
-    required String label,
-    required Color color,
-    required VoidCallback onPressed,
-  }) {
-    return ElevatedButton.icon(
-      onPressed: onPressed,
-      icon: Icon(icon),
-      label: Text(label),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: color,
-        minimumSize: Size(150, 60),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
         ),
       ),
     );

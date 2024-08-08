@@ -28,7 +28,7 @@ class BottomNavBar extends StatelessWidget {
           label: '홈화면',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.recommend, color: Colors.black),
+          icon: Icon(Icons.android, color: Colors.black),
           label: '코디하기',
         ),
         BottomNavigationBarItem(

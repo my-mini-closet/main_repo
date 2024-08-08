@@ -4,6 +4,30 @@ import 'register_screen.dart';
 import 'package:myminicloset/screens/main_view_model.dart';
 import 'package:myminicloset/screens/kakao_login.dart'; // KakaoLogin import
 
+class WavePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = Colors.lightBlueAccent.withOpacity(0.2)
+      ..style = PaintingStyle.fill;
+
+    Path path = Path();
+    path.moveTo(0, size.height * 0.8);
+    path.quadraticBezierTo(size.width * 0.25, size.height * 0.8, size.width * 0.5, size.height * 0.6);
+    path.quadraticBezierTo(size.width * 0.75, size.height * 0.4, size.width, size.height * 0.6);
+    path.lineTo(size.width, 0);
+    path.lineTo(0, 0);
+    path.close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
+  }
+}
+
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -23,109 +47,139 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          Positioned(
-            top: -50,
-            left: -50,
-            child: _buildCircle(200, Colors.white.withOpacity(0.2)),
-          ),
-          Positioned(
-            bottom: -50,
-            right: -50,
-            child: _buildCircle(300, Colors.white.withOpacity(0.2)),
-          ),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    '나만의 작은 옷장',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 36,
-                      fontWeight: FontWeight.bold,
+      backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          child: Stack(
+            children: [
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: CustomPaint(
+                  size: Size(MediaQuery.of(context).size.width, 300),
+                  painter: WavePainter(),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Spacer(flex: 2),
+                    Text(
+                      '나만의 작은 옷장',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 36,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 60),
+                    SizedBox(height: 40),
 
-                  // 로그인 폼 컨테이너
-                  Container(
-                    padding: EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.white.withOpacity(0.3)),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextField(
-                          controller: emailController,
-                          decoration: InputDecoration(
-                            labelText: '이메일',
-                            labelStyle: TextStyle(color: Colors.black),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Colors.black),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Colors.black),
-                            ),
+                    // 로그인 폼 컨테이너
+                    Container(
+                      padding: EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: Offset(0, 3),
                           ),
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        SizedBox(height: 20),
-                        TextField(
-                          controller: passwordController,
-                          decoration: InputDecoration(
-                            labelText: '비밀번호',
-                            labelStyle: TextStyle(color: Colors.black),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Colors.black),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextField(
+                            controller: emailController,
+                            decoration: InputDecoration(
+                              labelText: '이메일',
+                              labelStyle: TextStyle(color: Colors.black),
+                              prefixIcon: Icon(Icons.email, color: Colors.black),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide: BorderSide(color: Colors.black),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide: BorderSide(color: Colors.black),
+                              ),
                             ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Colors.black),
-                            ),
+                            style: TextStyle(color: Colors.black),
                           ),
-                          obscureText: true,
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        SizedBox(height: 20),
-                        ElevatedButton(
-                          key: Key('loginButton'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white.withOpacity(0.3),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
+                          SizedBox(height: 20),
+                          TextField(
+                            controller: passwordController,
+                            decoration: InputDecoration(
+                              labelText: '비밀번호',
+                              labelStyle: TextStyle(color: Colors.black),
+                              prefixIcon: Icon(Icons.lock, color: Colors.black),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide: BorderSide(color: Colors.black),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide: BorderSide(color: Colors.black),
+                              ),
                             ),
+                            obscureText: true,
+                            style: TextStyle(color: Colors.black),
                           ),
-                          onPressed: () {
-                            // 이메일 형식 검사
-                            if (emailController.text.isNotEmpty &&
-                                passwordController.text.isNotEmpty) {
-                              // 이메일 형식 확인
-                              if (RegExp(r'^[^@]+@[^@]+\.[^@]+')
-                                  .hasMatch(emailController.text)) {
-                                // 로그인 된다면 메인화면으로 이동
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => HomeScreen()),
-                                );
+                          SizedBox(height: 20),
+                          ElevatedButton(
+                            key: Key('loginButton'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blueAccent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                            ),
+                            onPressed: () {
+                              // 이메일 형식 검사
+                              if (emailController.text.isNotEmpty &&
+                                  passwordController.text.isNotEmpty) {
+                                // 이메일 형식 확인
+                                if (RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                                    .hasMatch(emailController.text)) {
+                                  // 로그인 된다면 메인화면으로 이동
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => HomeScreen()),
+                                  );
+                                } else {
+                                  // 잘못된 이메일 형식 경고
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text('로그인 실패'),
+                                      content: Text('올바른 이메일 형식을 입력해주세요.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text('확인'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
                               } else {
-                                // 잘못된 이메일 형식 경고
+                                // 이메일과 패스워드 필드가 비어있으면 경고하기
                                 showDialog(
                                   context: context,
                                   builder: (context) => AlertDialog(
                                     title: Text('로그인 실패'),
-                                    content: Text('올바른 이메일 형식을 입력해주세요.'),
+                                    content: Text('이메일과 패스워드를 입력해주세요.'),
                                     actions: [
                                       TextButton(
                                         onPressed: () {
@@ -137,132 +191,103 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 );
                               }
-                            } else {
-                              // 이메일과 패스워드 필드가 비어있으면 경고하기
-                              showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  title: Text('로그인 실패'),
-                                  content: Text('이메일과 패스워드를 입력해주세요.'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text('확인'),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }
-                          },
-                          child: Text('로그인',
-                              style: TextStyle(color: Colors.black)),
-                        ),
-
-                        SizedBox(height: 20),
-                        Divider(color: Colors.black, thickness: 1),
-                        SizedBox(height: 20),
-
-                        ElevatedButton(
-                          key: Key('kakaoLoginButton'),
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.black,
-                            backgroundColor: Colors.yellow,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            padding: EdgeInsets.symmetric(vertical: 12),
+                            },
+                            child: Text('로그인',
+                                style: TextStyle(color: Colors.white)),
                           ),
-                          onPressed: () async {
-                            bool success = await viewModel.login(); // 카카오 로그인 호출
-                            if (success) {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HomeScreen()),
-                              );
-                            } else {
-                              showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  title: Text('로그인 실패'),
-                                  content: Text('카카오 로그인에 실패했습니다.'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text('확인'),
-                                    ),
-                                  ],
+                          SizedBox(height: 20),
+                          Divider(color: Colors.black, thickness: 1),
+                          SizedBox(height: 20),
+                          ElevatedButton(
+                            key: Key('kakaoLoginButton'),
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.black,
+                              backgroundColor: Colors.yellow,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              padding: EdgeInsets.symmetric(vertical: 12),
+                            ),
+                            onPressed: () async {
+                              bool success = await viewModel.login(); // 카카오 로그인 호출
+                              if (success) {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => HomeScreen()),
+                                );
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: Text('로그인 실패'),
+                                    content: Text('카카오 로그인에 실패했습니다.'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('확인'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/kakao_icon.png',
+                                  width: 24,
+                                  height: 24,
                                 ),
-                              );
-                            }
-                          },
-                          child: Row(
+                                SizedBox(width: 8),
+                                Text(
+                                  '카카오로 로그인',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 20),
+
+                          // 회원가입 안내 문구와 버튼 추가
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Image.asset(
-                                'assets/kakao_icon.png',
-                                width: 24,
-                                height: 24,
-                              ),
-                              SizedBox(width: 8),
                               Text(
-                                '카카오로 로그인',
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                '아직 계정이 없으신가요?',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => RegisterScreen()),
+                                  );
+                                },
+                                child: Text(
+                                  '회원가입',
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                        SizedBox(height: 20),
-
-                        // 회원가입 안내 문구와 버튼 추가
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              '아직 계정이 없으신가요?',
-                              style: TextStyle(color: Colors.black),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => RegisterScreen()),
-                                );
-                              },
-                              child: Text(
-                                '회원가입',
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    Spacer(),
+                  ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCircle(double size, Color color) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
+        ),
       ),
     );
   }
