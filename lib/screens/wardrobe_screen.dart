@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:myminicloset/imagerepository.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:provider/provider.dart';
+import '../provider/userprovider.dart';
 import 'recommendation_screen.dart'; // RecommendationScreen 클래스 import
 
 class WardrobeScreen extends StatefulWidget {
@@ -13,9 +15,8 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
   final ImageRepository _imageRepository = ImageRepository();
   final List<String> _categories = ['all', '상의', '하의', '모자', '신발', '액세서리'];
   Map<String, List<Map<String, dynamic>>> _categoryImages = {};
-  String userId = '1234';
   String _selectedCategory = 'all';
-
+  late String userId;
   @override
   void initState() {
     super.initState();
@@ -113,7 +114,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
     List<Map<String, dynamic>> displayedImages = _selectedCategory == 'all'
         ? _categoryImages.values.expand((images) => images).toList()
         : _categoryImages[_selectedCategory] ?? [];
-
+    userId = Provider.of<UserProvider>(context).userId;
     return Scaffold(
       appBar: AppBar(
         title: Text(

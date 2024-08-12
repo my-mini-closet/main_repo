@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:myminicloset/provider/userprovider.dart';
+import 'package:provider/provider.dart';
 import 'screens/login_screen.dart' as login;
 import 'screens/home_screen.dart' as home;
 import 'screens/recommendation_screen.dart';
@@ -16,7 +18,12 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => UserProvider(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
