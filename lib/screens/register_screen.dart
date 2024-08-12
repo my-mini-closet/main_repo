@@ -9,7 +9,7 @@ class RegisterScreen extends StatelessWidget {
   final TextEditingController nicknameController = TextEditingController();
 
   Future<void> signupUser(BuildContext context) async {
-    final url = 'http://172.30.1.87:8080/api/users/signup'; // 나중에 서버 배포시 url 변경 지금 실행해보고 싶으면 ipconfig로 본인 ip로 확인
+    final url = 'http://172.30.1.44:8080/api/users/signup'; // 나중에 서버 배포시 url 변경 지금 실행해보고 싶으면 ipconfig로 본인 ip로 확인
     final response = await http.post(
       Uri.parse(url),
         headers: {'Content-Type': 'application/json'},

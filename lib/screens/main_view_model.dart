@@ -1,13 +1,47 @@
+import 'dart:convert';
+
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:myminicloset/screens/social_login.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+
+import '../provider/userprovider.dart';
 
 class MainViewModel {
   final SocialLogin _socialLogin;
+  final UserProvider _userProvider;
   bool isLogined = false; // 처음에 로그인 안 되어 있음
   User? user; // 카카오톡에서 사용자 정보를 저장하는 객체 User를 nullable 변수로 선언
 
-  MainViewModel(this._socialLogin);
-
+  MainViewModel(this._socialLogin, this._userProvider);
+  Future<bool> loginWithEmail(String email, String password) async {
+    final url = 'http://172.30.1.44:8080/api/users/login';
+    // 서버로 로그인 요청을 보내고 응답을 처리합니다.
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json', // JSON 형식으로 요청
+        },
+        body: jsonEncode({
+          'userEmail': email,
+          'password': password,
+        }),
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body); // JSON 응답 파싱
+        String userId = data['userId'].toString(); // 사용자 ID 추출
+        _userProvider.setUserId(userId);
+        return true;
+      } else {
+        // 로그인 실패
+        return false;
+      }
+    } catch (e) {
+      print('Login failed: $e');
+      return false;
+    }
+  }
   Future<bool> login() async {
     try {
       isLogined = await _socialLogin.login(); // 로그인 시도하기
