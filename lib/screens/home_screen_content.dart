@@ -64,7 +64,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
         title: Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            '유저님 안녕하세요!',
+            '$userNickName님 안녕하세요!',
             style: TextStyle(
               fontSize: 20,
               color: Colors.black,
