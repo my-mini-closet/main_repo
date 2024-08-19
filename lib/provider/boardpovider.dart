@@ -1,0 +1,17 @@
+import 'package:flutter/cupertino.dart';
+
+class BoardProvider with ChangeNotifier {
+  List<Map<String, dynamic>> _posts = [];
+
+  List<Map<String, dynamic>> get posts => _posts;
+
+  void setPosts(List<Map<String, dynamic>> posts) {
+    _posts = posts;
+    notifyListeners();
+  }
+
+  void addPost(Map<String, dynamic> post) {
+    _posts.add(post);
+    notifyListeners();
+  }
+}

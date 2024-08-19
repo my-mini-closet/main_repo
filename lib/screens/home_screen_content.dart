@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import '../provider/userprovider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'weather_model.dart';
 
@@ -18,6 +20,8 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
   Map<DateTime, List<String>> _events = {};
+
+  late String userNickName;
 
   @override
   void initState() {
@@ -53,15 +57,26 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            '유저님 안녕하세요!',
-            style: TextStyle(
-              fontSize: 20,
+    userNickName = Provider.of<UserProvider>(context).userNickName;
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '$userNickName님 안녕하세요!',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 25),
+            _weather != null
+                ? _buildWeatherInfo()
+                : Center(child: CircularProgressIndicator()),
+            SizedBox(height: 16),
+            Divider
               color: Colors.black,
               fontWeight: FontWeight.bold,
             ),

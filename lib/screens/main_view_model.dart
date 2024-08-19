@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:myminicloset/screens/social_login.dart';
 import 'package:http/http.dart' as http;
@@ -15,7 +16,8 @@ class MainViewModel {
 
   MainViewModel(this._socialLogin, this._userProvider);
   Future<bool> loginWithEmail(String email, String password) async {
-    final url = 'http://172.30.1.44:8080/api/users/login';
+    String baseUrl = dotenv.env['API_URL'] ?? 'http://localhost:8080/api';
+    final url = '${baseUrl}/users/login';
     // 서버로 로그인 요청을 보내고 응답을 처리합니다.
     try {
       final response = await http.post(
@@ -29,9 +31,15 @@ class MainViewModel {
         }),
       );
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body); // JSON 응답 파싱
+        final decodedBody = utf8.decode(response.bodyBytes);
+        final data = json.decode(decodedBody);
+        print('Received data: $data'); // 서버에서 받아온 데이터를 로그로 출력// JSON 응답 파싱
         String userId = data['userId'].toString(); // 사용자 ID 추출
+        String userNickName = data['userNickname'];
+        print("userId: ${userId}");
+        print("userNickName: ${userNickName}");
         _userProvider.setUserId(userId);
+        _userProvider.setUserNickName(userNickName);
         return true;
       } else {
         // 로그인 실패
