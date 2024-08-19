@@ -238,6 +238,10 @@ image_picker_windows
 2.19
 file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_windows-0.2.1+1/
 file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_windows-0.2.1+1/lib/
+intl
+3.0
+file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/intl-0.19.0/
+file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/intl-0.19.0/lib/
 js
 3.1
 file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/js-0.7.1/
@@ -374,6 +378,10 @@ shared_preferences_windows
 3.3
 file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_windows-2.4.1/
 file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_windows-2.4.1/lib/
+simple_gesture_detector
+2.12
+file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/simple_gesture_detector-0.2.1/
+file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/simple_gesture_detector-0.2.1/lib/
 source_span
 2.18
 file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/source_span-1.10.0/
@@ -406,6 +414,10 @@ synchronized
 3.0
 file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/synchronized-3.1.0+1/
 file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/synchronized-3.1.0+1/lib/
+table_calendar
+3.0
+file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/table_calendar-3.1.2/
+file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/table_calendar-3.1.2/lib/
 term_glyph
 2.12
 file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/term_glyph-1.2.1/

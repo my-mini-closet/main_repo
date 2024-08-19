@@ -58,25 +58,15 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
   @override
   Widget build(BuildContext context) {
     userNickName = Provider.of<UserProvider>(context).userNickName;
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '$userNickName님 안녕하세요!',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 25),
-            _weather != null
-                ? _buildWeatherInfo()
-                : Center(child: CircularProgressIndicator()),
-            SizedBox(height: 16),
-            Divider
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            '유저님 안녕하세요!',
+            style: TextStyle(
+              fontSize: 20,
               color: Colors.black,
               fontWeight: FontWeight.bold,
             ),
