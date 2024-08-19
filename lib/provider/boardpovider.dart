@@ -10,6 +10,14 @@ class BoardProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void updatePost(Map<String, dynamic> updatedPost) {
+    final index = _posts.indexWhere((post) => post['id'] == updatedPost['id']);
+    if (index != -1) {
+      _posts[index] = updatedPost;
+      notifyListeners();
+    }
+  }
+
   void addPost(Map<String, dynamic> post) {
     _posts.add(post);
     notifyListeners();
