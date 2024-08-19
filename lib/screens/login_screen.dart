@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../provider/userprovider.dart';
 import 'home_screen.dart';
 import 'register_screen.dart';
 import 'package:myminicloset/screens/main_view_model.dart';
@@ -37,11 +39,11 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   late final MainViewModel viewModel; // Add viewModel as a late variable
-
   @override
   void initState() {
     super.initState();
-    viewModel = MainViewModel(KakaoLogin()); // Initialize viewModel with KakaoLogin
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    viewModel = MainViewModel(KakaoLogin(), userProvider); // Initialize viewModel with KakaoLogin
   }
 
   @override
@@ -142,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 borderRadius: BorderRadius.circular(25),
                               ),
                             ),
-                            onPressed: () {
+                            onPressed: () async {
                               // 이메일 형식 검사
                               if (emailController.text.isNotEmpty &&
                                   passwordController.text.isNotEmpty) {
@@ -150,11 +152,34 @@ class _LoginScreenState extends State<LoginScreen> {
                                 if (RegExp(r'^[^@]+@[^@]+\.[^@]+')
                                     .hasMatch(emailController.text)) {
                                   // 로그인 된다면 메인화면으로 이동
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => HomeScreen()),
+                                  bool success = await viewModel.loginWithEmail(
+                                    emailController.text,
+                                    passwordController.text,
                                   );
+
+                                  if (success) {
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => HomeScreen()),
+                                    );
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: Text('로그인 실패'),
+                                        content: Text('이메일 또는 비밀번호가 잘못되었습니다.'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text('확인'),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
                                 } else {
                                   // 잘못된 이메일 형식 경고
                                   showDialog(
