@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:myminicloset/imagerepository.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -20,7 +21,12 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchImages();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        userId = Provider.of<UserProvider>(context, listen: false).userId;
+      });
+      _fetchImages();
+    });
   }
 
   Future<void> _fetchImages() async {

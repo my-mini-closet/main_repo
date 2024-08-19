@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import '../provider/userprovider.dart';
 import 'weather_model.dart';
 
 class HomeScreenContent extends StatefulWidget {
@@ -14,6 +16,8 @@ class HomeScreenContent extends StatefulWidget {
 
 class _HomeScreenContentState extends State<HomeScreenContent> {
   Weather? _weather;
+
+  late String userNickName;
 
   @override
   void initState() {
@@ -49,6 +53,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
 
   @override
   Widget build(BuildContext context) {
+    userNickName = Provider.of<UserProvider>(context).userNickName;
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -56,7 +61,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '유저님 안녕하세요!',
+              '$userNickName님 안녕하세요!',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,

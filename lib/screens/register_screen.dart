@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class RegisterScreen extends StatelessWidget {
@@ -9,7 +10,8 @@ class RegisterScreen extends StatelessWidget {
   final TextEditingController nicknameController = TextEditingController();
 
   Future<void> signupUser(BuildContext context) async {
-    final url = 'http://172.30.1.44:8080/api/users/signup'; // 나중에 서버 배포시 url 변경 지금 실행해보고 싶으면 ipconfig로 본인 ip로 확인
+    String baseUrl = dotenv.env['API_URL'] ?? 'http://localhost:8080/api';
+    final url = '${baseUrl}/users/signup'; // 나중에 서버 배포시 url 변경 지금 실행해보고 싶으면 ipconfig로 본인 ip로 확인
     final response = await http.post(
       Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
