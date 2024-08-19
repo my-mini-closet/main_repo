@@ -350,6 +350,12 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "intl",
+      "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/intl-0.19.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "js",
       "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/js-0.7.1",
       "packageUri": "lib/",
@@ -554,6 +560,12 @@
       "languageVersion": "3.3"
     },
     {
+      "name": "simple_gesture_detector",
+      "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/simple_gesture_detector-0.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "sky_engine",
       "rootUri": "file:///C:/Users/jhkim/AppData/Local/Flutter/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
@@ -604,6 +616,12 @@
     {
       "name": "synchronized",
       "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/synchronized-3.1.0+1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "table_calendar",
+      "rootUri": "file:///C:/Users/jhkim/AppData/Local/Pub/Cache/hosted/pub.dev/table_calendar-3.1.2",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -662,7 +680,7 @@
       "languageVersion": "3.4"
     }
   ],
-  "generated": "2024-08-19T15:43:35.450141Z",
+  "generated": "2024-08-19T18:02:40.895457Z",
   "generator": "pub",
   "generatorVersion": "3.4.3",
   "flutterRoot": "file:///C:/Users/jhkim/AppData/Local/Flutter/flutter",
