@@ -37,3 +37,13 @@ CREATE TABLE images (
     PRIMARY KEY (id),
     FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE
 );
+
+create table likes(
+	id BIGINT unsigned not null auto_increment,
+    user_id BIGINT unsigned not null,
+    board_id BIGINT unsigned not null,
+    liked boolean not null,
+    primary key (id),
+    foreign key (board_id) references boards(id) on delete cascade,
+    foreign key (user_id) references users(id) on delete cascade
+);
