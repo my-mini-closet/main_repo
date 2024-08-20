@@ -415,37 +415,55 @@ class _AddPostScreenState extends State<AddPostScreen> {
         ..fields['userId'] = userId.toString()
         ..files.add(await http.MultipartFile.fromPath('files', _imageFile!.path));
 
-      final response = await request.send();
-      final responseBody = await response.stream.bytesToString();
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${responseBody}');
+      try {
+        final response = await request.send();
+        final responseBody = await response.stream.bytesToString();
+        print('Response status: ${response.statusCode}');
+        print('Response body: ${responseBody}');
 
-      if (response.statusCode == 200) {
-        final responseData = json.decode(responseBody);
-        // 응답 데이터의 'imageUrls'를 사용
-        final imageUrls = responseData['imageUrls'] as List<dynamic>?;
-        if (imageUrls != null && imageUrls.isNotEmpty) {
-          final imageUrl = imageUrls[0] as String?;
-          print("imageUrl: ${imageUrl}");
+        if (response.statusCode == 200) {
+          final responseData = json.decode(responseBody);
+          final imageUrls = responseData['imageUrls'] as List<dynamic>?;
+          if (imageUrls != null && imageUrls.isNotEmpty) {
+            final imageUrl = imageUrls[0] as String?;
+            print("imageUrl: ${imageUrl}");
 
-          widget.onPostAdded({
-            'image': '${imageUrl}', // Complete the URL
-            'title': _titleController.text,
-            'author': userNickName,
-            'description': _descriptionController.text.isNotEmpty
-                ? _descriptionController.text
-                : '설명 없음',
-          });
-          Navigator.pop(context);
+            widget.onPostAdded({
+              'image': '${imageUrl}', // Complete the URL
+              'title': _titleController.text,
+              'author': userNickName,
+              'description': _descriptionController.text.isNotEmpty
+                  ? _descriptionController.text
+                  : '설명 없음',
+            });
+            Navigator.pop(context);
+          } else {
+            print('이미지 URL이 없습니다.');
+          }
         } else {
-          print('이미지 URL이 없습니다.');
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text('게시물 업로드 실패'),
+              content: Text('서버에서 오류가 발생했습니다.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('확인'),
+                ),
+              ],
+            ),
+          );
         }
-      } else {
+      } catch (e) {
+        print('Error submitting post: $e');
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
             title: Text('게시물 업로드 실패'),
-            content: Text('서버에서 오류가 발생했습니다.'),
+            content: Text('네트워크 오류가 발생했습니다.'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -457,8 +475,26 @@ class _AddPostScreenState extends State<AddPostScreen> {
           ),
         );
       }
+    } else {
+      // 필수 입력값이 비어있을 경우 처리
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('게시물 등록 실패'),
+          content: Text('제목 또는 이미지를 입력하세요.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('확인'),
+            ),
+          ],
+        ),
+      );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -467,48 +503,54 @@ class _AddPostScreenState extends State<AddPostScreen> {
         title: Text('새 게시글 등록'),
         backgroundColor: Colors.pinkAccent,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              controller: _titleController,
-              decoration: InputDecoration(labelText: '제목'),
-            ),
-            SizedBox(height: 10),
-            _imageFile == null
-                ? Text('사진을 선택하세요')
-                : Image.file(_imageFile!),
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: _pickImage,
-                  child: Text('갤러리에서 선택'),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                controller: _titleController,
+                decoration: InputDecoration(labelText: '제목'),
+              ),
+              SizedBox(height: 10),
+              _imageFile == null
+                  ? Text('사진을 선택하세요')
+                  : Container(
+                height: MediaQuery.of(context).size.height * 0.4,
+                child: Image.file(
+                  _imageFile!,
+                  fit: BoxFit.contain,
                 ),
-                SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: _takePhoto,
-                  child: Text('카메라로 촬영'),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            TextField(
-              controller: _descriptionController,
-              decoration: InputDecoration(labelText: '짧은 코멘트'),
-              maxLines: 3,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _submitPost,
-              child: Text('게시글 등록'),
-            ),
-          ],
+              ),
+              Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: _pickImage,
+                    child: Text('갤러리에서 선택'),
+                  ),
+                  SizedBox(width: 10),
+                  ElevatedButton(
+                    onPressed: _takePhoto,
+                    child: Text('카메라로 촬영'),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10),
+              TextField(
+                controller: _descriptionController,
+                decoration: InputDecoration(labelText: '짧은 코멘트'),
+                maxLines: 3,
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _submitPost,
+                child: Text('게시글 등록'),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-
-
