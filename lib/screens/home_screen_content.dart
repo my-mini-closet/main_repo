@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../provider/userprovider.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'weather_model.dart';
 
 class HomeScreenContent extends StatefulWidget {
@@ -17,10 +16,6 @@ class HomeScreenContent extends StatefulWidget {
 
 class _HomeScreenContentState extends State<HomeScreenContent> {
   Weather? _weather;
-  DateTime _selectedDay = DateTime.now();
-  DateTime _focusedDay = DateTime.now();
-  Map<DateTime, List<String>> _events = {};
-
   late String userNickName;
 
   @override
@@ -93,7 +88,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
               SizedBox(height: 10),
               _buildShortcutIcons(),
               SizedBox(height: 16),
-              _buildCalendar(),
+              _buildRecommendationBox(), // 추가된 추천 코디 박스
             ],
           ),
         ),
@@ -227,12 +222,12 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
     );
   }
 
-  Widget _buildCalendar() {
+  Widget _buildRecommendationBox() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '내 일정 등록하기',
+          '오늘의 추천 코디',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -240,114 +235,25 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
         ),
         SizedBox(height: 8),
         Container(
-          constraints: BoxConstraints(maxHeight: 350),
-          child: TableCalendar(
-            firstDay: DateTime.utc(2000, 1, 1),
-            lastDay: DateTime.utc(2100, 12, 31),
-            focusedDay: _focusedDay,
-            selectedDayPredicate: (day) {
-              return isSameDay(_selectedDay, day);
-            },
-            onDaySelected: (selectedDay, focusedDay) {
-              setState(() {
-                _selectedDay = selectedDay;
-                _focusedDay = focusedDay;
-              });
-              _addEvent(context);
-            },
-            eventLoader: (day) {
-              return _events[day] ?? [];
-            },
-            calendarStyle: CalendarStyle(
-              todayDecoration: BoxDecoration(
-                color: Colors.blueAccent,
-                shape: BoxShape.circle,
-              ),
-              selectedDecoration: BoxDecoration(
-                color: Colors.orangeAccent,
-                shape: BoxShape.circle,
-              ),
-              markersAlignment: Alignment.bottomCenter,
-              markerDecoration: BoxDecoration(
-                color: Colors.redAccent,
-                shape: BoxShape.circle,
-              ),
-            ),
-            headerStyle: HeaderStyle(
-              formatButtonVisible: false,
-              titleCentered: true,
-              titleTextStyle: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-              leftChevronIcon: Icon(Icons.chevron_left, color: Colors.black),
-              rightChevronIcon: Icon(Icons.chevron_right, color: Colors.black),
-            ),
-            daysOfWeekStyle: DaysOfWeekStyle(
-              weekendStyle: TextStyle(color: Colors.red),
-              weekdayStyle: TextStyle(color: Colors.black),
+          width: double.infinity,
+          height: 200,
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(15.0),
+            border: Border.all(
+              color: Colors.grey[400]!,
+              width: 1,
             ),
           ),
-        ),
-        SizedBox(height: 8),
-        ..._getEventsForDay(_selectedDay).map(
-              (event) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2.0),
-            child: Row(
-              children: [
-                Icon(Icons.event, color: Colors.blueAccent),
-                SizedBox(width: 8),
-                Text(event),
-              ],
+          child: Center(
+            child: Text(
+              '추천 코디 이미지가 여기에 표시됩니다.',
+              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+              textAlign: TextAlign.center,
             ),
           ),
         ),
       ],
-    );
-  }
-
-  List<String> _getEventsForDay(DateTime day) {
-    return _events[day] ?? [];
-  }
-
-  void _addEvent(BuildContext context) {
-    final TextEditingController _eventController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('새 일정 추가'),
-          content: TextField(
-            controller: _eventController,
-            decoration: InputDecoration(
-              hintText: '일정 내용을 입력하세요',
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('취소'),
-            ),
-            TextButton(
-              onPressed: () {
-                if (_eventController.text.isEmpty) return;
-                setState(() {
-                  if (_events[_selectedDay] != null) {
-                    _events[_selectedDay]!.add(_eventController.text);
-                  } else {
-                    _events[_selectedDay] = [_eventController.text];
-                  }
-                });
-                Navigator.pop(context);
-              },
-              child: Text('추가'),
-            ),
-          ],
-        );
-      },
     );
   }
 }
