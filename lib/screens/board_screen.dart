@@ -162,6 +162,9 @@ class _BoardScreenState extends State<BoardScreen> {
           onTap: () {
             _onPostTap(context, post);
           },
+          onLongPress: () {
+            _showDeleteConfirmationDialog(context, post['id']);
+          },
           child: Container(
             decoration: BoxDecoration(
               image: DecorationImage(
@@ -176,6 +179,38 @@ class _BoardScreenState extends State<BoardScreen> {
     );
   }
 
+
+  void _showDeleteConfirmationDialog(BuildContext context, String postId) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('삭제 확인'),
+          content: Text('게시글을 삭제하시겠습니까?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('취소'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deletePost(postId);
+              },
+              child: Text('삭제'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _deletePost(String postId) {
+    final boardProvider = Provider.of<BoardProvider>(context, listen: false);
+    boardProvider.removePost(postId);
+  }
 
   void _onPostTap(BuildContext context, Map<String, dynamic> post) {
     Navigator.push(
