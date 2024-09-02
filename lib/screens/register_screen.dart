@@ -11,15 +11,15 @@ class RegisterScreen extends StatelessWidget {
 
   Future<void> signupUser(BuildContext context) async {
     String baseUrl = dotenv.env['API_URL'] ?? 'http://localhost:8080/api';
-    final url = '${baseUrl}/users/signup'; // 나중에 서버 배포시 url 변경 지금 실행해보고 싶으면 ipconfig로 본인 ip로 확인
+    final url = '${baseUrl}/users/signup'; // 나중에 서버 배포 시 url 변경 필요
     final response = await http.post(
       Uri.parse(url),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode({
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
         'userEmail': emailController.text,
         'password': passwordController.text,
         'userNickname': nicknameController.text,
-        }),
+      }),
     );
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
@@ -46,14 +46,14 @@ class RegisterScreen extends StatelessWidget {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('회원가입'),
-        backgroundColor: Colors.black,
+        title: Text('회원가입', style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: Center(
         child: Padding(
@@ -65,75 +65,75 @@ class RegisterScreen extends StatelessWidget {
                 controller: nicknameController,
                 decoration: InputDecoration(
                   labelText: '닉네임',
-                  labelStyle: TextStyle(color: Colors.white),
+                  labelStyle: TextStyle(color: Colors.black),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.white),
+                    borderSide: BorderSide(color: Colors.black),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.white),
+                    borderSide: BorderSide(color: Colors.black),
                   ),
                 ),
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.black),
               ),
               SizedBox(height: 20),
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(
                   labelText: '이메일',
-                  labelStyle: TextStyle(color: Colors.white),
+                  labelStyle: TextStyle(color: Colors.black),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.white),
+                    borderSide: BorderSide(color: Colors.black),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.white),
+                    borderSide: BorderSide(color: Colors.black),
                   ),
                 ),
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.black),
               ),
               SizedBox(height: 20),
               TextField(
                 controller: passwordController,
                 decoration: InputDecoration(
                   labelText: '비밀번호',
-                  labelStyle: TextStyle(color: Colors.white),
+                  labelStyle: TextStyle(color: Colors.black),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.white),
+                    borderSide: BorderSide(color: Colors.black),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.white),
+                    borderSide: BorderSide(color: Colors.black),
                   ),
                 ),
                 obscureText: true,
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.black),
               ),
               SizedBox(height: 20),
               TextField(
                 controller: confirmPasswordController,
                 decoration: InputDecoration(
                   labelText: '비밀번호 확인',
-                  labelStyle: TextStyle(color: Colors.white),
+                  labelStyle: TextStyle(color: Colors.black),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.white),
+                    borderSide: BorderSide(color: Colors.black),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Colors.white),
+                    borderSide: BorderSide(color: Colors.black),
                   ),
                 ),
                 obscureText: true,
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.black),
               ),
               SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white.withOpacity(0.3),
+                  backgroundColor: Colors.black.withOpacity(0.1),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25),
                   ),

@@ -16,22 +16,25 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
   final String question = '나와 어울리는 색을 선택해주세요';
 
   final List<List<Color>> options = [
-
-    [Colors.lightBlue[100]!, Colors.deepPurple[100]!],
-    [Colors.blue[100]!, Colors.purple[100]!],
-    [Colors.cyan[200]!, Colors.teal[100]!],
-
-    [Colors.blue[800]!, Colors.purple[800]!],
-    [Colors.indigo[600]!, Colors.blueGrey[700]!],
-    [Colors.blueGrey[300]!, Colors.cyan[700]!],
-
-    [Colors.yellowAccent[100]!, Colors.pink[100]!],
-    [Colors.orange[200]!, Colors.yellow[200]!],
-    [Colors.amber[200]!, Colors.orange[300]!],
-
-    [Colors.orange[800]!, Colors.yellow[800]!],
-    [Colors.brown[700]!, Colors.deepOrange[700]!],
-    [Colors.red[400]!, Colors.brown[300]!],
+    [Colors.lightBlue[100]!, Colors.deepPurple[100]!], // Cool Tone
+    [Colors.blue[100]!, Colors.purple[100]!],         // Cool Tone
+    [Colors.cyan[200]!, Colors.teal[100]!],           // Warm Tone
+    [Colors.blue[800]!, Colors.purple[800]!],         // Cool Tone
+    [Colors.indigo[600]!, Colors.blueGrey[700]!],     // Cool Tone
+    [Colors.blueGrey[300]!, Colors.cyan[700]!],       // Warm Tone
+    [Colors.yellowAccent[100]!, Colors.pink[100]!],   // Warm Tone
+    [Colors.orange[200]!, Colors.yellow[200]!],       // Warm Tone
+    [Colors.amber[200]!, Colors.orange[300]!],        // Warm Tone
+    [Colors.orange[800]!, Colors.yellow[800]!],       // Warm Tone
+    [Colors.brown[700]!, Colors.deepOrange[700]!],    // Warm Tone
+    [Colors.red[400]!, Colors.brown[300]!],           // Warm Tone
+    [Colors.green[300]!, Colors.lime[300]!],          // Warm Tone
+    [Colors.purple[200]!, Colors.purpleAccent[200]!], // Cool Tone
+    [Colors.grey[300]!, Colors.blueGrey[300]!],       // Cool Tone
+    [Colors.teal[300]!, Colors.green[400]!],          // Warm Tone
+    [Colors.red[300]!, Colors.redAccent[200]!],       // Warm Tone
+    [Colors.pink[300]!, Colors.deepOrange[300]!],     // Warm Tone
+  ];
 
     // 추가 색상
     [Colors.green[300]!, Colors.lime[300]!],
@@ -152,46 +155,37 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    userId = Provider.of<UserProvider>(context).userId;
     return Scaffold(
       appBar: AppBar(
-        title: Text('퍼스널 컬러 진단'),
+        title: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text('나와 어울리는 색을 선택해주세요!'),
+        ),
       ),
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                question,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 20),
-              for (int i = 0; i < options[currentQuestionIndex].length; i++)
-                GestureDetector(
-                  onTap: () => nextQuestion(i),
-                  child: Container(
-                    height: 120,
-                    width: 120,
-                    decoration: BoxDecoration(
-                      color: options[currentQuestionIndex][i],
-                      borderRadius: BorderRadius.circular(15),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          offset: Offset(0, 4),
-                          blurRadius: 10.0,
-                        ),
-                      ],
-                    ),
-                    margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                  ),
+        child: Column(
+          children: <Widget>[
+            Flexible(
+              flex: 1,
+              child: GestureDetector(
+                onTap: () => nextQuestion(0),
+                child: Container(
+                  width: double.infinity,
+                  color: options[currentQuestionIndex][0],
                 ),
-            ],
-          ),
+              ),
+            ),
+            Flexible(
+              flex: 1,
+              child: GestureDetector(
+                onTap: () => nextQuestion(1),
+                child: Container(
+                  width: double.infinity,
+                  color: options[currentQuestionIndex][1],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
