@@ -34,8 +34,6 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
     [Colors.teal[300]!, Colors.green[400]!],          // Warm Tone
     [Colors.red[300]!, Colors.redAccent[200]!],       // Warm Tone
     [Colors.pink[300]!, Colors.deepOrange[300]!],     // Warm Tone
-  ];
-
     // 추가 색상
     [Colors.green[300]!, Colors.lime[300]!],
     [Colors.purple[200]!, Colors.purpleAccent[200]!],
@@ -123,6 +121,7 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
     String email = "user@example.com"; // Replace with the actual user's email
     String url = "http://localhost:8080/api/users/updatePersonalColor?email=$email&personalColor=$result";
     */
+    userId = Provider.of<UserProvider>(context, listen: false).userId;
     final url = '$baseUrl/users/updatePersonalColor';
     final response = await http.post(
       Uri.parse(url),
