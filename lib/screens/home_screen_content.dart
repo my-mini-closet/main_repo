@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../provider/userprovider.dart';
+import 'login_screen.dart';
 import 'weather_model.dart';
 
 class HomeScreenContent extends StatefulWidget {
@@ -17,6 +18,7 @@ class HomeScreenContent extends StatefulWidget {
 class _HomeScreenContentState extends State<HomeScreenContent> {
   Weather? _weather;
   late String userNickName;
+  String? selectedColor;
 
   @override
   void initState() {
@@ -50,6 +52,92 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
     }
   }
 
+  void _selectPersonalColor() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('퍼스널 컬러 선택'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  RadioListTile<String>(
+                    title: Text('여름 쿨톤'),
+                    value: '여름 쿨톤',
+                    groupValue: selectedColor,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedColor = value;
+                      });
+                    },
+                  ),
+                  RadioListTile<String>(
+                    title: Text('겨울 쿨톤'),
+                    value: '겨울 쿨톤',
+                    groupValue: selectedColor,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedColor = value;
+                      });
+                    },
+                  ),
+                  RadioListTile<String>(
+                    title: Text('가을 웜톤'),
+                    value: '가을 웜톤',
+                    groupValue: selectedColor,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedColor = value;
+                      });
+                    },
+                  ),
+                  RadioListTile<String>(
+                    title: Text('봄 웜톤'),
+                    value: '봄 웜톤',
+                    groupValue: selectedColor,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedColor = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('취소'),
+                ),
+                TextButton(
+                  onPressed: () {
+
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('저장'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+
+  void _logout() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoginScreen(),
+      ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     userNickName = Provider.of<UserProvider>(context).userNickName;
@@ -69,6 +157,28 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
         ),
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
+        actions: [
+          PopupMenuButton<String>(
+            icon: Icon(Icons.account_circle_rounded, color: Colors.blueAccent),
+            onSelected: (value) {
+              if (value == 'color') {
+                _selectPersonalColor();
+              } else if (value == 'logout') {
+                _logout();
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'color',
+                child: Text('퍼스널 컬러 선택'),
+              ),
+              PopupMenuItem(
+                value: 'logout',
+                child: Text('로그아웃'),
+              ),
+            ],
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -88,7 +198,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
               SizedBox(height: 10),
               _buildShortcutIcons(),
               SizedBox(height: 16),
-              _buildRecommendationBox(), // 추가된 추천 코디 박스
+              _buildRecommendationBox(),
             ],
           ),
         ),
