@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
+import '../provider/userprovider.dart';
 import 'color_palette_screen.dart';
 import 'package:http/http.dart' as http;
 
@@ -40,9 +45,11 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
   int currentQuestionIndex = 0;
   List<int> selectedColorIndices = [];
   String result = '';
+  String baseUrl = dotenv.env['API_URL'] ?? 'http://localhost:8080/api';
+  late String userId;
 
-  void nextQuestion(int selectedIndex) {
-    setState(() {
+  void nextQuestion(int selectedIndex)  {
+    setState(()  {
       if (selectedIndex >= 0 && selectedIndex < options[currentQuestionIndex].length) {
         selectedColorIndices.add(selectedIndex);
         if (currentQuestionIndex < options.length - 1) {
@@ -113,14 +120,29 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
     String email = "user@example.com"; // Replace with the actual user's email
     String url = "http://localhost:8080/api/users/updatePersonalColor?email=$email&personalColor=$result";
     */
-
+    final url = '$baseUrl/users/updatePersonalColor';
     final response = await http.post(
-      Uri.parse('http://localhost:8080/api/users/updatePersonalColor'), // 고민중
-      body: {
-        'email': 'your-email@example.com',  // 사용자의 이메일을 전달, 로그인 기능 구현시 추가
-        'personalColor': personalColor,
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json', // JSON 형식으로 요청
       },
+      body: jsonEncode({
+        'userId': userId,
+        'personalColor': personalColor,
+      }),
     );
+    print("userId: $userId, personalColor: $personalColor");
+    print("response status: ${response.statusCode}");
+    print("response body: ${response.body}");
+    if (response.statusCode == 200) {
+      final decodedBody = utf8.decode(response.bodyBytes);
+      final data = json.decode(decodedBody);
+      print('Received data: $data'); // 서버에서 받아온 데이터를 로그로 출력// JSON 응답 파싱
+      String userId = data['userId'].toString(); // 사용자 ID 추출
+      String personalColor = data['personalColor'];
+      print("userId: ${userId}");
+      print("personalColpr: ${personalColor}");
+    }
 
     if (response.statusCode == 200) {
       print('Personal color updated successfully');
@@ -130,6 +152,7 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
   }
   @override
   Widget build(BuildContext context) {
+    userId = Provider.of<UserProvider>(context).userId;
     return Scaffold(
       appBar: AppBar(
         title: Text('퍼스널 컬러 진단'),
