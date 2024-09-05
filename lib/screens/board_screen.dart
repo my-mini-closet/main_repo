@@ -180,7 +180,7 @@ class _BoardScreenState extends State<BoardScreen> {
   }
 
 
-  void _showDeleteConfirmationDialog(BuildContext context, String postId) {
+  void _showDeleteConfirmationDialog(BuildContext context, int postId) {
     showDialog(
       context: context,
       builder: (context) {
@@ -207,9 +207,25 @@ class _BoardScreenState extends State<BoardScreen> {
     );
   }
 
-  void _deletePost(String postId) {
+  Future<void> _deletePost(int postId) async {
+    final url = Uri.parse('${dotenv.env['API_URL']}/boards/${postId}/delete');
     final boardProvider = Provider.of<BoardProvider>(context, listen: false);
-    boardProvider.removePost(postId);
+
+    try {
+      final response = await http.delete(url);
+      if (response.statusCode == 200){
+        boardProvider.removePost(postId);
+        print("게시물 삭제");
+      }
+      else {
+        print("status code: ${response.statusCode}");
+        print("response body: ${response.body}");
+        print("게시물 삭제 실패");
+      }
+    }
+    catch (e) {
+      print("게시물 삭제 시 오류 발생");
+    }
   }
 
   void _onPostTap(BuildContext context, Map<String, dynamic> post) {
