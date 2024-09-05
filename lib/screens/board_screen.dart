@@ -265,6 +265,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     _loadPostDetails();
     //print("likes: $likes, dislikes: $dislikes");
   }
+
   Future<void> _loadPostDetails() async {
     final url = Uri.parse('$baseUrl/boards/${widget.post['id']}'); // 게시글 세부 사항을 가져오는 URL입니다.
     try {
@@ -284,6 +285,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       print('Error loading post details: $e');
     }
   }
+
   Future<void> _loadPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     print('isLiked: $isLiked, isDisLiked: $isDisliked');

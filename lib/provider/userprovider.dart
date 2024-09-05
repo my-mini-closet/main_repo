@@ -14,4 +14,9 @@ class UserProvider with ChangeNotifier {
     _userNickName = userNickName;
     notifyListeners();
   }
+  void logout() {
+    _userId = '';
+    _userNickName = '';
+    notifyListeners();
+  }
 }

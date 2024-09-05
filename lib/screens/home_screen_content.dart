@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../provider/userprovider.dart';
 import 'login_screen.dart';
 import 'weather_model.dart';
@@ -19,6 +21,8 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
   Weather? _weather;
   late String userNickName;
   String? selectedColor;
+  late String userId;
+  String baseUrl = dotenv.env['API_URL'] ?? 'http://localhost:8080/api';
 
   @override
   void initState() {
@@ -51,7 +55,38 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
       print(e);
     }
   }
+  Future<void> savePersonalColor(String personalColor) async {
+    userId = Provider.of<UserProvider>(context, listen: false).userId;
+    final url = '$baseUrl/users/updatePersonalColor';
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json', // JSON 형식으로 요청
+      },
+      body: jsonEncode({
+        'userId': userId,
+        'personalColor': personalColor,
+      }),
+    );
+    print("userId: $userId, personalColor: $personalColor");
+    print("response status: ${response.statusCode}");
+    print("response body: ${response.body}");
+    if (response.statusCode == 200) {
+      final decodedBody = utf8.decode(response.bodyBytes);
+      final data = json.decode(decodedBody);
+      print('Received data: $data'); // 서버에서 받아온 데이터를 로그로 출력// JSON 응답 파싱
+      String userId = data['userId'].toString(); // 사용자 ID 추출
+      String personalColor = data['personalColor'];
+      print("userId: ${userId}");
+      print("personalColpr: ${personalColor}");
+    }
 
+    if (response.statusCode == 200) {
+      print('Personal color updated successfully');
+    } else {
+      print('Failed to update personal color');
+    }
+  }
   void _selectPersonalColor() {
     showDialog(
       context: context,
@@ -114,7 +149,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                 ),
                 TextButton(
                   onPressed: () {
-
+                    savePersonalColor(selectedColor!);
                     Navigator.of(context).pop();
                   },
                   child: Text('저장'),
@@ -127,8 +162,13 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
     );
   }
 
-
+  Future<void> _clearPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+  }
   void _logout() {
+    Provider.of<UserProvider>(context, listen: false).logout();
+    _clearPreferences();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -141,6 +181,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
   @override
   Widget build(BuildContext context) {
     userNickName = Provider.of<UserProvider>(context).userNickName;
+    userId = Provider.of<UserProvider>(context).userId;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
