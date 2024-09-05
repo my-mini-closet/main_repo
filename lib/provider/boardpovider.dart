@@ -23,7 +23,7 @@ class BoardProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void removePost(String postId) {
+  void removePost(int postId) {
     _posts.removeWhere((post) => post['id'] == postId);
     notifyListeners();
   }
