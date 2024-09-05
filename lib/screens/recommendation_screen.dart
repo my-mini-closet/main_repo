@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:myminicloset/imagerepository.dart';
+import 'package:myminicloset/provider/userprovider.dart';
+import 'package:provider/provider.dart';
 
 class RecommendationScreen extends StatefulWidget {
   @override
@@ -12,15 +14,16 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   List<Map<String, dynamic>> _uploadedImages = [];
   List<Map<String, dynamic>> _selectedImages = [];
   bool _isLoading = false;
-
+  late String userId;
   @override
   void initState() {
     super.initState();
+    userId = Provider.of<UserProvider>(context, listen: false).userId;
     _fetchImages();
   }
 
   Future<void> _fetchImages() async {
-    String userId = '1234'; // 추후 로그인 기능 구현 시 userId를 사용하세요.
+    //String userId = '1234'; // 추후 로그인 기능 구현 시 userId를 사용하세요.
     try {
       List<Map<String, dynamic>> imagesData = await _imageRepository.getImages(userId);
       setState(() {
