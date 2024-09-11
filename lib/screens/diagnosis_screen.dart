@@ -1,4 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
+import '../provider/userprovider.dart';
 import 'color_palette_screen.dart';
 import 'package:http/http.dart' as http;
 
@@ -35,6 +39,8 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
   int currentQuestionIndex = 0;
   List<int> selectedColorIndices = [];
   String result = '';
+  late String userId;
+  String baseUrl = dotenv.env['API_URL'] ?? 'http://localhost:8080/api';
 
   void nextQuestion(int selectedIndex) {
     setState(() {
@@ -49,7 +55,6 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
       }
     });
   }
-
 
   String diagnose(List<int> selectedQuestionIndices) {
     int coolCount = 0;
@@ -67,7 +72,6 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
     print('Cool Count: $coolCount, Warm Count: $warmCount');
 
     if (coolCount >= warmCount) {
-
       int summerCoolCount = selectedQuestionIndices.where((index) => [0, 1, 6, 8].contains(index)).length;
       int winterCoolCount = selectedQuestionIndices.where((index) => [3, 4, 7, 9].contains(index)).length;
 
@@ -79,7 +83,6 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
         return '겨울 쿨톤';
       }
     } else {
-
       int springWarmCount = selectedQuestionIndices.where((index) => [10, 11, 16, 18].contains(index)).length;
       int autumnWarmCount = selectedQuestionIndices.where((index) => [12, 13, 14, 19].contains(index)).length;
 
@@ -130,16 +133,29 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
   }
 
   Future<void> savePersonalColor(String personalColor) async {
+    userId = Provider.of<UserProvider>(context, listen: false).userId; // Obtain userId from UserProvider
+    final url = '$baseUrl/users/updatePersonalColor';
     final response = await http.post(
-      Uri.parse('http://localhost:8080/api/users/updatePersonalColor'),
-      body: {
-        'email': 'your-email@example.com',
-        'personalColor': personalColor,
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
       },
+      body: jsonEncode({
+        'userId': userId,
+        'personalColor': personalColor,
+      }),
     );
-
+    print("userId: $userId, personalColor: $personalColor");
+    print("response status: ${response.statusCode}");
+    print("response body: ${response.body}");
     if (response.statusCode == 200) {
-      print('Personal color updated successfully');
+      final decodedBody = utf8.decode(response.bodyBytes);
+      final data = json.decode(decodedBody);
+      print('Received data: $data'); // Server response
+      String userId = data['userId'].toString(); // Extract userId
+      String personalColor = data['personalColor'];
+      print("userId: ${userId}");
+      print("personalColor: ${personalColor}");
     } else {
       print('Failed to update personal color');
     }
