@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
@@ -13,46 +12,40 @@ class DiagnosisScreen extends StatefulWidget {
 }
 
 class _DiagnosisScreenState extends State<DiagnosisScreen> {
-  final String question = '나와 어울리는 색을 선택해주세요';
-
   final List<List<Color>> options = [
     [Colors.lightBlue[100]!, Colors.deepPurple[100]!], // Cool Tone
     [Colors.blue[100]!, Colors.purple[100]!],         // Cool Tone
-    [Colors.cyan[200]!, Colors.teal[100]!],           // Warm Tone
+    [Colors.cyan[200]!, Colors.teal[100]!],           // Cool Tone
     [Colors.blue[800]!, Colors.purple[800]!],         // Cool Tone
     [Colors.indigo[600]!, Colors.blueGrey[700]!],     // Cool Tone
-    [Colors.blueGrey[300]!, Colors.cyan[700]!],       // Warm Tone
+    [Colors.blueGrey[300]!, Colors.cyan[700]!],       // Cool Tone
+    [Colors.purple[200]!, Colors.purpleAccent[200]!], // Cool Tone
+    [Colors.grey[300]!, Colors.blueGrey[300]!],       // Cool Tone
+    [Colors.lightGreen[200]!, Colors.cyanAccent[100]!], // Cool Tone
+    [Colors.yellow[300]!, Colors.indigo[400]!],       // Cool Tone
+
     [Colors.yellowAccent[100]!, Colors.pink[100]!],   // Warm Tone
     [Colors.orange[200]!, Colors.yellow[200]!],       // Warm Tone
     [Colors.amber[200]!, Colors.orange[300]!],        // Warm Tone
-    [Colors.orange[800]!, Colors.yellow[800]!],       // Warm Tone
+    [Colors.orange[800]!, Colors.deepOrange[800]!],   // Warm Tone
     [Colors.brown[700]!, Colors.deepOrange[700]!],    // Warm Tone
     [Colors.red[400]!, Colors.brown[300]!],           // Warm Tone
     [Colors.green[300]!, Colors.lime[300]!],          // Warm Tone
-    [Colors.purple[200]!, Colors.purpleAccent[200]!], // Cool Tone
-    [Colors.grey[300]!, Colors.blueGrey[300]!],       // Cool Tone
     [Colors.teal[300]!, Colors.green[400]!],          // Warm Tone
     [Colors.red[300]!, Colors.redAccent[200]!],       // Warm Tone
     [Colors.pink[300]!, Colors.deepOrange[300]!],     // Warm Tone
-    // 추가 색상
-    [Colors.green[300]!, Colors.lime[300]!],
-    [Colors.purple[200]!, Colors.purpleAccent[200]!],
-    [Colors.grey[300]!, Colors.blueGrey[300]!],
-    [Colors.teal[300]!, Colors.green[400]!],
-    [Colors.red[300]!, Colors.redAccent[200]!],
-    [Colors.pink[300]!, Colors.deepOrange[300]!],
   ];
 
   int currentQuestionIndex = 0;
   List<int> selectedColorIndices = [];
   String result = '';
-  String baseUrl = dotenv.env['API_URL'] ?? 'http://localhost:8080/api';
   late String userId;
+  String baseUrl = dotenv.env['API_URL'] ?? 'http://localhost:8080/api';
 
-  void nextQuestion(int selectedIndex)  {
-    setState(()  {
+  void nextQuestion(int selectedIndex) {
+    setState(() {
       if (selectedIndex >= 0 && selectedIndex < options[currentQuestionIndex].length) {
-        selectedColorIndices.add(selectedIndex);
+        selectedColorIndices.add(currentQuestionIndex + selectedIndex);
         if (currentQuestionIndex < options.length - 1) {
           currentQuestionIndex++;
         } else {
@@ -60,6 +53,53 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
           showResultDialog(result);
         }
       }
+    });
+  }
+
+  String diagnose(List<int> selectedQuestionIndices) {
+    int coolCount = 0;
+    int warmCount = 0;
+
+    for (int questionIndex in selectedQuestionIndices) {
+      if (questionIndex < 10) {
+        coolCount++;
+      } else {
+        warmCount++;
+      }
+    }
+
+    print('Selected Indices: $selectedQuestionIndices');
+    print('Cool Count: $coolCount, Warm Count: $warmCount');
+
+    if (coolCount >= warmCount) {
+      int summerCoolCount = selectedQuestionIndices.where((index) => [0, 1, 6, 8].contains(index)).length;
+      int winterCoolCount = selectedQuestionIndices.where((index) => [3, 4, 7, 9].contains(index)).length;
+
+      print('Summer Cool Count: $summerCoolCount, Winter Cool Count: $winterCoolCount');
+
+      if (summerCoolCount >= winterCoolCount) {
+        return '여름 쿨톤';
+      } else {
+        return '겨울 쿨톤';
+      }
+    } else {
+      int springWarmCount = selectedQuestionIndices.where((index) => [10, 11, 16, 18].contains(index)).length;
+      int autumnWarmCount = selectedQuestionIndices.where((index) => [12, 13, 14, 19].contains(index)).length;
+
+      print('Spring Warm Count: $springWarmCount, Autumn Warm Count: $autumnWarmCount');
+
+      if (springWarmCount >= autumnWarmCount) {
+        return '봄 웜톤';
+      } else {
+        return '가을 웜톤';
+      }
+    }
+  }
+
+  void resetDiagnosis() {
+    setState(() {
+      currentQuestionIndex = 0;
+      selectedColorIndices.clear();
     });
   }
 
@@ -92,41 +132,13 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
     );
   }
 
-  void resetDiagnosis() {
-    setState(() {
-      currentQuestionIndex = 0;
-      selectedColorIndices.clear();
-    });
-  }
-
-  String diagnose(List<int> selectedColorIndices) {
-    int coolLightCount = selectedColorIndices.where((index) => index == 0 || index == 4 || index == 8).length;
-    int coolDeepCount = selectedColorIndices.where((index) => index == 1 || index == 5).length;
-    int warmLightCount = selectedColorIndices.where((index) => index == 2 || index == 6).length;
-    int warmDeepCount = selectedColorIndices.where((index) => index == 3 || index == 7 || index == 9).length;
-
-    if (coolLightCount >= 2) {
-      return '여름 쿨톤';
-    } else if (coolDeepCount >= 2) {
-      return '겨울 쿨톤';
-    } else if (warmLightCount >= 2) {
-      return '봄 웜톤';
-    } else if (warmDeepCount >= 2) {
-      return '가을 웜톤';
-    }
-    return '진단 결과 없음';
-  }
   Future<void> savePersonalColor(String personalColor) async {
-    /*
-    String email = "user@example.com"; // Replace with the actual user's email
-    String url = "http://localhost:8080/api/users/updatePersonalColor?email=$email&personalColor=$result";
-    */
-    userId = Provider.of<UserProvider>(context, listen: false).userId;
+    userId = Provider.of<UserProvider>(context, listen: false).userId; // Obtain userId from UserProvider
     final url = '$baseUrl/users/updatePersonalColor';
     final response = await http.post(
       Uri.parse(url),
       headers: {
-        'Content-Type': 'application/json', // JSON 형식으로 요청
+        'Content-Type': 'application/json',
       },
       body: jsonEncode({
         'userId': userId,
@@ -139,19 +151,16 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
     if (response.statusCode == 200) {
       final decodedBody = utf8.decode(response.bodyBytes);
       final data = json.decode(decodedBody);
-      print('Received data: $data'); // 서버에서 받아온 데이터를 로그로 출력// JSON 응답 파싱
-      String userId = data['userId'].toString(); // 사용자 ID 추출
+      print('Received data: $data'); // Server response
+      String userId = data['userId'].toString(); // Extract userId
       String personalColor = data['personalColor'];
       print("userId: ${userId}");
-      print("personalColpr: ${personalColor}");
-    }
-
-    if (response.statusCode == 200) {
-      print('Personal color updated successfully');
+      print("personalColor: ${personalColor}");
     } else {
       print('Failed to update personal color');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
