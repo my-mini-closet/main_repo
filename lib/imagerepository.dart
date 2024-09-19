@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -31,6 +32,17 @@ class ImageRepository {
     required String path,
     required String category,
     required List<String> weather,
+    String? subCategory,
+    String? sleeve,
+    String? color,
+    String? subColor,
+    String? shirtSleeve,
+    List<String>? detail,
+    String? collar,
+    List<String>? material,
+    List<String>? print,
+    String? neckLine,
+    String? fit,
   }) async {
     await _firestore.collection("images").doc(docId).set({
       "userId": userId,
@@ -40,6 +52,17 @@ class ImageRepository {
       "dateTime": Timestamp.now(),
       "category": category,
       "weather": weather,
+      "color": color,
+      "subCategory": subCategory,
+      "sleeve": sleeve,
+      "subColor": subColor,
+      "shirtSleeve": shirtSleeve,
+      "detail": detail,
+      "collar": collar,
+      "material": material,
+      "print": print,
+      "neckLine": neckLine,
+      "fit": fit,
     });
   }
 
