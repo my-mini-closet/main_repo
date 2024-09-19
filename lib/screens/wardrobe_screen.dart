@@ -138,7 +138,6 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                 TextButton(
                   onPressed: () async {
                     Navigator.of(context).pop();
-                    Navigator.of(context).pop();
                     // 기본값으로 null 설정
                     String? subCategory = null;
                     String? sleeve = null;
