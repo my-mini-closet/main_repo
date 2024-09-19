@@ -30,6 +30,7 @@ class ImageRepository {
     required String imageUrl,
     required String path,
     required String category,
+    required List<String> weather,
   }) async {
     await _firestore.collection("images").doc(docId).set({
       "userId": userId,
@@ -38,6 +39,7 @@ class ImageRepository {
       "path": path,
       "dateTime": Timestamp.now(),
       "category": category,
+      "weather": weather,
     });
   }
 

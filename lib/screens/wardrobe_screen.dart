@@ -13,6 +13,7 @@ class WardrobeScreen extends StatefulWidget {
 }
 
 class _WardrobeScreenState extends State<WardrobeScreen> {
+  List<String> _selectedWeather = [];
   final ImageRepository _imageRepository = ImageRepository();
   final List<String> _categories = ['all', '상의', '하의', '모자', '신발', '액세서리'];
   Map<String, List<Map<String, dynamic>>> _categoryImages = {};
@@ -39,45 +40,8 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
     });
   }
 
-  Future<void> _pickImage(String category, ImageSource source) async {
-    Map<String, String>? imageInfo = await _imageRepository.uploadImage(userId, source);
-    if (imageInfo != null) {
-      await _imageRepository.saveImageInfo(
-        userId: userId,
-        docId: DateTime.now().millisecondsSinceEpoch.toString(),  // 고유한 docId 생성
-        imageUrl: imageInfo['image']!,
-        path: imageInfo['path']!,
-        category: category,  // 카테고리 저장
-      );
-      _fetchImages();
-    }
-  }
-
-  Future<void> _showCategoryDialog() async {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('카테고리 선택'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: _categories.where((c) => c != 'all').map((category) {
-                return ListTile(
-                  title: Text(category),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    _showImageSourceDialog(category);
-                  },
-                );
-              }).toList(),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> _showImageSourceDialog(String category) async {
+  // 이미지 소스 선택 다이얼로그
+  Future<void> _showImageSourceDialog() async {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -90,14 +54,14 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                   title: Text('갤러리'),
                   onTap: () {
                     Navigator.of(context).pop();
-                    _pickImage(category, ImageSource.gallery);
+                    _pickImage(ImageSource.gallery);  // 이미지 소스 선택 후, 카테고리 다이얼로그 호출
                   },
                 ),
                 ListTile(
                   title: Text('카메라'),
                   onTap: () {
                     Navigator.of(context).pop();
-                    _pickImage(category, ImageSource.camera);
+                    _pickImage(ImageSource.camera);  // 이미지 소스 선택 후, 카테고리 다이얼로그 호출
                   },
                 ),
               ],
@@ -106,6 +70,98 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
         );
       },
     );
+  }
+
+// 이미지를 선택하는 함수
+  Future<void> _pickImage(ImageSource source) async {
+    _selectedWeather = [];
+    Map<String, String>? imageInfo = await _imageRepository.uploadImage(userId, source);
+    if (imageInfo != null) {
+      _showCategoryDialog(imageInfo);  // 이미지 업로드 후, 카테고리 선택 다이얼로그 호출
+    }
+  }
+
+// 카테고리 선택 다이얼로그
+  Future<void> _showCategoryDialog(Map<String, String> imageInfo) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('카테고리 선택'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: _categories.where((c) => c != 'all').map((category) {
+                return ListTile(
+                  title: Text(category),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    _showWeatherDialog(imageInfo, category);  // 카테고리 선택 후, 날씨 선택 다이얼로그 호출
+                  },
+                );
+              }).toList(),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+// 날씨 선택 다이얼로그
+  Future<void> _showWeatherDialog(Map<String, String> imageInfo, String category) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder( // Dialog 내에서도 상태 관리를 할 수 있도록 StatefulBuilder 사용
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: Text('계절 선택'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: ['봄', '여름', '가을', '겨울'].map((season) {
+                    return CheckboxListTile(
+                      title: Text(season),
+                      value: _selectedWeather.contains(season),
+                      onChanged: (bool? value) {
+                        setState(() {
+                          if (value == true) {
+                            _selectedWeather.add(season);
+                          } else {
+                            _selectedWeather.remove(season);
+                          }
+                        });
+                      },
+                    );
+                  }).toList(),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    await _saveImageInfo(imageInfo, category, _selectedWeather);  // 이미지 정보 저장
+                    _fetchImages();  // 저장 후 이미지 다시 불러오기
+                  },
+                  child: Text('확인'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+// 이미지 정보 저장 함수
+  Future<void> _saveImageInfo(Map<String, String> imageInfo, String category, List<String> weather) async {
+    await _imageRepository.saveImageInfo(
+      userId: userId,
+      docId: DateTime.now().millisecondsSinceEpoch.toString(),  // 고유한 docId 생성
+      imageUrl: imageInfo['image']!,
+      path: imageInfo['path']!,
+      category: category,  // 카테고리 저장
+      weather: weather,    // 선택된 날씨 저장
+    );
+    _fetchImages();
   }
 
   void _navigateToRecommendationScreen() {
@@ -169,7 +225,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                   style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               ),
-              onTap: _showCategoryDialog,
+              onTap: _showImageSourceDialog,
             ),
           ),
           Expanded(
