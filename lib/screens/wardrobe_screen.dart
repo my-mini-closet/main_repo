@@ -138,7 +138,41 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                 TextButton(
                   onPressed: () async {
                     Navigator.of(context).pop();
-                    await _saveImageInfo(imageInfo, category, _selectedWeather);  // 이미지 정보 저장
+                    Navigator.of(context).pop();
+                    // 기본값으로 null 설정
+                    String? subCategory = null;
+                    String? sleeve = null;
+                    String? color = null;
+                    String? subColor = null;
+                    String? shirtSleeve = null;
+                    List<String>? detail = null;
+                    String? collar = null;
+                    List<String>? material = null;
+                    List<String>? print = null;
+                    String? neckLine = null;
+                    String? fit = null;
+
+                    // 여기에 사용자 입력 UI가 있다면, 해당 값을 설정
+                    // 예를 들어, 아래는 예제일 뿐입니다. 실제 UI에서 입력받은 값으로 대체해야 함.
+                    // subCategory = 'exampleSubCategory';  // 사용자가 선택한 값으로 설정
+                    // detail = ['exampleDetail'];         // 사용자가 선택한 값으로 설정
+
+                    await _saveImageInfo(
+                      imageInfo,
+                      category,
+                      _selectedWeather,
+                      subCategory,
+                      sleeve,
+                      color,
+                      subColor,
+                      shirtSleeve,
+                      detail,
+                      collar,
+                      material,
+                      print,
+                      neckLine,
+                      fit,
+                    ); // 이미지 정보 저장
                     _fetchImages();  // 저장 후 이미지 다시 불러오기
                   },
                   child: Text('확인'),
@@ -152,7 +186,17 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
   }
 
 // 이미지 정보 저장 함수
-  Future<void> _saveImageInfo(Map<String, String> imageInfo, String category, List<String> weather) async {
+  Future<void> _saveImageInfo(Map<String, String> imageInfo, String category, List<String> weather, String? subCategory,
+  String? sleeve,
+  String? color,
+  String? subColor,
+  String? shirtSleeve,
+  List<String>? detail,
+  String? collar,
+  List<String>? material,
+  List<String>? print,
+  String? neckLine,
+  String? fit) async {
     await _imageRepository.saveImageInfo(
       userId: userId,
       docId: DateTime.now().millisecondsSinceEpoch.toString(),  // 고유한 docId 생성
@@ -160,6 +204,17 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
       path: imageInfo['path']!,
       category: category,  // 카테고리 저장
       weather: weather,    // 선택된 날씨 저장
+      subCategory: subCategory ?? null,  // 선택된 값이 있으면 저장, 없으면 null
+      sleeve: sleeve ?? null,
+      color: color ?? null,
+      subColor: subColor ?? null,
+      shirtSleeve: shirtSleeve ?? null,
+      detail: detail ?? null,
+      collar: collar ?? null,
+      material: material ?? null,
+      print: print ?? null,
+      neckLine: neckLine ?? null,
+      fit: fit ?? null,
     );
     _fetchImages();
   }
