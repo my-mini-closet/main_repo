@@ -43,6 +43,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
     "옐로우", "그린", "카키", "민트", "블루", "네이비", "스카이블루", "퍼플",
     "라벤더", "와인", "네온", "골드"
   ];
+
   final List<String> _detailCategories = [
     '프릴', '퍼프', '드롭숄더', '러플', '포켓', '띠', '셔링', '단추', '슬릿',
     '비대칭', '자수', 'X스트랩', '리본', '스트링', '버클', '니트꽈베기', '플레어',
@@ -195,6 +196,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                           dialogSelectedSeasons.clear(); // 계절 초기화
                         });
                       },
+                      isExpanded: true,
                       items: _categories
                           .where((c) => c != 'all') // 'all' 제외
                           .map<DropdownMenuItem<String>>((String category) {
@@ -216,6 +218,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                             dialogSelectedStyleCategory = newValue;
                           });
                         },
+                        isExpanded: true,
                         items: _clothingCategories[dialogSelectedCategory]
                             ?.map<DropdownMenuItem<String>>((String subCategory) {
                           return DropdownMenuItem<String>(
@@ -248,24 +251,54 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                 ),
               ),
               actions: [
-                TextButton(
-                  onPressed: () async {
-                    if (dialogSelectedCategory != null) { // 카테고리가 선택된 경우에만 진행
-                      Navigator.of(context).pop();
-                      await _showDetailedInfoDialog(
-                        imageInfo,
-                        dialogSelectedCategory,
-                        dialogSelectedSeasons,
-                        dialogSelectedStyleCategory,
-                      );
-                    } else {
-                      // 카테고리가 선택되지 않은 경우 사용자에게 알림 (선택을 요구)
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('카테고리를 선택해주세요.')),
-                      );
-                    }
-                  },
-                  child: Text('상세 정보 입력하기'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // 상세 정보 입력하기 버튼
+                    TextButton(
+                      onPressed: () async {
+                        if (dialogSelectedCategory != null) { // 카테고리가 선택된 경우에만 진행
+                          Navigator.of(context).pop();
+                          await _showDetailedInfoDialog(
+                            imageInfo,
+                            dialogSelectedCategory,
+                            dialogSelectedSeasons,
+                            dialogSelectedStyleCategory,
+                          );
+                        } else {
+                          // 카테고리가 선택되지 않은 경우 사용자에게 알림 (선택을 요구)
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('카테고리를 선택해주세요.')),
+                          );
+                        }
+                      },
+                      child: Text('상세 정보 입력하기'),
+                    ),
+                    // 저장 버튼
+                    TextButton(
+                      onPressed: () async {
+                        if (dialogSelectedCategory != null) { // 카테고리가 선택된 경우에만 진행
+                          Navigator.of(context).pop();
+                          // 저장 동작 수행
+                          await _showDetailedInfoDialog(
+                            imageInfo,
+                            dialogSelectedCategory,
+                            dialogSelectedSeasons,
+                            dialogSelectedStyleCategory,
+                          );
+                        } else {
+                          // 카테고리가 선택되지 않은 경우 사용자에게 알림
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('카테고리를 선택해주세요.')),
+                          );
+                        }
+                      },
+                      child: Text(
+                        '저장',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             );
@@ -275,6 +308,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
     );
   }
 
+
   // 상세 정보 입력 다이얼로그
   Future<void> _showDetailedInfoDialog(
       Map<String, String> imageInfo,
@@ -282,12 +316,95 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
       List<String> selectedSeasons,
       String? selectedStyleCategory,
       ) async {
-    // 상세 정보 선택 다이얼로그 구현
+    // 다이얼로그 내에서 사용할 로컬 상태 변수임
+    List<String> localDetailSelections = _selectedDetailCategory != null && _selectedDetailCategory!.isNotEmpty
+        ? List.from(_selectedDetailCategory!)
+        : ['']; // 최소 하나의 빈 드롭다운 생성
+
+    List<String> localMaterialSelections = _selectedMaterialCategory != null && _selectedMaterialCategory!.isNotEmpty
+        ? List.from(_selectedMaterialCategory!)
+        : ['']; // 최소 하나의 빈 드롭다운 생성
+
+    List<String> localPrintSelections = _selectedPrintCategory != null && _selectedPrintCategory!.isNotEmpty
+        ? List.from(_selectedPrintCategory!)
+        : ['']; // 최소 하나의 빈 드롭다운 생성
+
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
+            // Helper 함수: 드롭다운 추가
+            void _addDropdown(List<String> list) {
+              setState(() {
+                list.add(''); // 빈 값을 추가하기.. 음
+              });
+            }
+
+            // Helper 함수: 드롭다운 삭제
+            void _removeDropdown(List<String> list, int index) {
+              setState(() {
+                if (list.length > 1) { // 최소 하나는 유지하기..?
+                  list.removeAt(index);
+                }
+              });
+            }
+
+            // Helper 함수: 빌드 드롭다운 리스트
+            Widget _buildDropdownList(
+                String title,
+                List<String> selections,
+                List<String> options,
+                ) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  ...List.generate(selections.length, (index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: DropdownButton<String>(
+                              value: selections[index].isEmpty ? null : selections[index],
+                              hint: Text("선택하세요"),
+                              isExpanded: true,
+                              items: options.map((String option) {
+                                return DropdownMenuItem<String>(
+                                  value: option,
+                                  child: Text(option),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  selections[index] = newValue ?? '';
+                                });
+                              },
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          IconButton(
+                            icon: Icon(Icons.add, color: Colors.green),
+                            onPressed: () {
+                              _addDropdown(selections);
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.remove, color: Colors.red),
+                            onPressed: () {
+                              _removeDropdown(selections, index);
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                  SizedBox(height: 10),
+                ],
+              );
+            }
+
             return AlertDialog(
               title: Text('상세 정보 선택'),
               content: SingleChildScrollView(
@@ -298,6 +415,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                     DropdownButton<String>(
                       value: _selectedColorCategory,
                       hint: Text('색상 선택'),
+                      isExpanded: true,
                       onChanged: (String? newValue) {
                         setState(() {
                           _selectedColorCategory = newValue;
@@ -315,7 +433,8 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                     // 서브 색상 선택
                     DropdownButton<String>(
                       value: _selectedSubColorCategory,
-                      hint: Text('색상 선택'),
+                      hint: Text('서브 색상 선택'),
+                      isExpanded: true,
                       onChanged: (String? newValue) {
                         setState(() {
                           _selectedSubColorCategory = newValue;
@@ -330,69 +449,29 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                     ),
                     SizedBox(height: 20),
 
-                    // 상세 카테고리 선택
-                    Column(
-                      children: _detailCategories.map((detail) {
-                        return CheckboxListTile(
-                          title: Text(detail),
-                          value: _selectedDetailCategory?.contains(detail) ?? false, // Ensure it's not null
-                          onChanged: (bool? isChecked) {
-                            setState(() {
-                              if (isChecked == true) {
-                                _selectedDetailCategory ??= [];
-                                _selectedDetailCategory!.add(detail);
-                              } else {
-                                _selectedDetailCategory?.remove(detail);
-                              }
-                            });
-                          },
-                        );
-                      }).toList(),
+                    _buildDropdownList(
+                      '디테일 선택',
+                      localDetailSelections,
+                      _detailCategories,
                     ),
 
-                    // 프린트 선택
-                    Column(
-                      children: _printCategories.map((print) {
-                        return CheckboxListTile(
-                          title: Text(print),
-                          value: _selectedPrintCategory?.contains(print) ?? false, // Avoid null
-                          onChanged: (bool? isChecked) {
-                            setState(() {
-                              if (isChecked == true) {
-                                _selectedPrintCategory ??= [];
-                                _selectedPrintCategory!.add(print);
-                              } else {
-                                _selectedPrintCategory?.remove(print);
-                              }
-                            });
-                          },
-                        );
-                      }).toList(),
+                    _buildDropdownList(
+                      '프린트 선택',
+                      localPrintSelections,
+                      _printCategories,
                     ),
 
-                  Column(
-                    children: _materialCategories.map((material) {
-                      return CheckboxListTile(
-                        title: Text(material),
-                        value: _selectedMaterialCategory?.contains(material) ?? false, 
-                        onChanged: (bool? isChecked) {
-                          setState(() {
-                            if (isChecked == true) {
-                              _selectedMaterialCategory ??= [];
-                              _selectedMaterialCategory!.add(material);
-                            } else {
-                              _selectedMaterialCategory?.remove(material);
-                            }
-                          });
-                        },
-                      );
-                    }).toList(),
-                  ),
+                    _buildDropdownList(
+                      '소재 선택',
+                      localMaterialSelections,
+                      _materialCategories,
+                    ),
 
                     // 기장 선택
                     DropdownButton<String>(
                       value: _selectedSleeveCategory,
                       hint: Text('기장 선택'),
+                      isExpanded: true,
                       onChanged: (String? newValue) {
                         setState(() {
                           _selectedSleeveCategory = newValue;
@@ -411,6 +490,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                     DropdownButton<String>(
                       value: _selectedShirtSleeveCategory,
                       hint: Text('소매기장 선택'),
+                      isExpanded: true,
                       onChanged: (String? newValue) {
                         setState(() {
                           _selectedShirtSleeveCategory = newValue;
@@ -429,6 +509,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                     DropdownButton<String>(
                       value: _selectedNecklineCategory,
                       hint: Text('넥라인 선택'),
+                      isExpanded: true,
                       onChanged: (String? newValue) {
                         setState(() {
                           _selectedNecklineCategory = newValue;
@@ -447,6 +528,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                     DropdownButton<String>(
                       value: _selectedCollarCategory,
                       hint: Text('옷깃 선택'),
+                      isExpanded: true,
                       onChanged: (String? newValue) {
                         setState(() {
                           _selectedCollarCategory = newValue;
@@ -465,6 +547,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                     DropdownButton<String>(
                       value: _selectedFitCategory,
                       hint: Text('핏 선택'),
+                      isExpanded: true,
                       onChanged: (String? newValue) {
                         setState(() {
                           _selectedFitCategory = newValue;
@@ -480,6 +563,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                   ],
                 ),
               ),
+
               actions: [
                 TextButton(
                   onPressed: () async {
@@ -487,17 +571,17 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                     // 선택된 카테고리와 기타 정보를 저장
                     await _saveImageInfo(
                       imageInfo: imageInfo,
-                      category: selectedCategory!, // 다이얼로그에서 선택한 카테고리
-                      weather: selectedSeasons, // 다이얼로그에서 선택한 계절
-                      subCategory: selectedStyleCategory, // 다이얼로그에서 선택한 서브 카테고리
+                      category: selectedCategory!,
+                      weather: selectedSeasons,
+                      subCategory: selectedStyleCategory,
                       sleeve: _selectedSleeveCategory,
                       color: _selectedColorCategory,
                       subColor: _selectedSubColorCategory,
                       shirtSleeve: _selectedShirtSleeveCategory,
-                      detail: _selectedDetailCategory,
+                      detail: localDetailSelections,
                       collar: _selectedCollarCategory,
-                      material: _selectedMaterialCategory,
-                      print: _selectedPrintCategory,
+                      material: localMaterialSelections,
+                      print: localPrintSelections,
                       neckLine: _selectedNecklineCategory,
                       fit: _selectedFitCategory,
                     ); // 이미지 정보 저장
@@ -512,6 +596,8 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
       },
     );
   }
+
+
 
   // 이미지 정보 저장 함수 (명명된 매개변수 사용)
   Future<void> _saveImageInfo({
