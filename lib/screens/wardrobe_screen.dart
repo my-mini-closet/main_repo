@@ -68,7 +68,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
   ];
 
   final List<String> _sleeveCategories = [
-    "크롭", "노멀", "롱", "미니", "니렝스", "미디", "발목", "맥시"
+    "크롭", "노말", "롱", "미니", "니렝스", "미디", "발목", "맥시"
   ];
 
   final List<String> _shirtSleeves = [
@@ -76,13 +76,13 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
   ];
 
   final List<String> _necklineCategories = [
-    "라운드넥", "유넥", "브이넥", "홀토넥", "오프숄더", "원 숄더",
+    "라운드넥", "유넥", "브이넥", "홀터넥", "오프숄더", "원숄더",
     "스퀘어넥", "노카라", "후드", "터틀넥", "보트넥", "스위트하트"
   ];
 
   final List<String> _collarCategories = [
     "셔츠칼라", "보우칼라", "세일러칼라", "숄칼라", "폴로칼라",
-    "피터팬칼라", "너치드칼라", "차이나칼라", "테일러칼라", "밴드칼라"
+    "피터팬칼라", "너치드칼라", "차이나칼라", "테일러드칼라", "밴드칼라"
   ];
 
   final List<String> _fitCategories = [
