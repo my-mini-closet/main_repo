@@ -623,17 +623,17 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
       path: imageInfo['path']!,
       category: category,  // 카테고리 저장
       weather: weather,    // 선택된 날씨 저장
-      subCategory: subCategory,  // 선택된 서브 카테고리 저장
-      sleeve: sleeve,
-      color: color,
-      subColor: subColor,
-      shirtSleeve: shirtSleeve,
-      detail: detail,
-      collar: collar,
-      material: material,
-      print: print,
-      neckLine: neckLine,
-      fit: fit,
+      subCategory: subCategory ?? null,  // 선택된 값이 있으면 저장, 없으면 null
+      sleeve: sleeve ?? null,
+      color: color ?? null,
+      subColor: subColor ?? null,
+      shirtSleeve: shirtSleeve ?? null,
+      detail: detail ?? null,
+      collar: collar ?? null,
+      material: material ?? null,
+      print: print ?? null,
+      neckLine: neckLine ?? null,
+      fit: fit ?? null,
     );
     _fetchImages();
   }
